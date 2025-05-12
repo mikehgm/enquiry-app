@@ -1,0 +1,15 @@
+.badge-new       { background-color: #0d6efd; }  /* New */
+.badge-progress  { background-color: #ffc107; color: #212529; }  /* In Progress */
+.badge-hold      { background-color: #6c757d; }  /* On Hold */
+.badge-resolved  { background-color: #198754; }  /* Resolved */
+
+.fs-3 { font-size: 1.75rem; } /* or adjust to fs-4/fs-2 based on preference */
+.fw-bold { font-weight: bold; }
+.active-box {
+  outline: 3px solid #ffffffaa;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+}
+
+.stat-container {
+  cursor: pointer;
+}

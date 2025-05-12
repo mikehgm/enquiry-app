@@ -1,0 +1,16 @@
+  #enquiry-list .card-title {
+    font-weight: bold;
+  }
+
+  #enquiry-list .card-subtitle {
+    font-size: 0.9rem;
+  }
+
+  #enquiry-list .card-text {
+    margin-bottom: 0.4rem;
+  }
+
+  .badge-new       { background-color: #0d6efd; }  /* New */
+  .badge-progress  { background-color: #ffc107; }  /* In progress */
+  .badge-hold      { background-color: #6c757d; }  /* On hold */
+  .badge-resolved  { background-color: #198754; }  /* Resolved */

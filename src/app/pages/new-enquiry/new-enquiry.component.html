@@ -1,0 +1,77 @@
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+          <div class="card">
+            <div class="card-header text-white">
+              <h1 class="h3 mb-2">New Enquiry</h1>
+            </div>
+            <div class="card-body p-4 p-lg-5">
+              <form (ngSubmit)="onSubmit()" #formRef="ngForm">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                      <select class="form-select" name="enquiryTypeId" [(ngModel)]="newEnquiry.enquiryTypeId" id="enquiryTypeId" required>
+                        <option value="">Select Enquiry Type</option>
+                        @for (type of typeList | async; track $index) {
+                          <option [value]="type.typeId">{{ type.typeName }}</option>
+                        }
+
+                      </select>
+                      <label for="enquiryTypeId" class="required-field">Enquiry Type</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                      <select class="form-select" name="enquiryStatusId" [(ngModel)]="newEnquiry.enquiryStatusId" id="enquiryStatusId" required>
+                        <option value="">Select Status</option>
+                        @for (status of statusList | async; track $index) {
+                          <option [value]="status.statusId">{{ status.status }}</option>
+                        }
+                      </select>
+                      <label for="enquiryStatusId" class="required-field">Status</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="text" name="customerName" [(ngModel)]="newEnquiry.customerName" class="form-control" id="customerName" placeholder=" " required>
+                  <label for="customerName" class="required-field">Full Name</label>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                      <input type="email" name="email" [(ngModel)]="newEnquiry.email" class="form-control" id="email" placeholder=" " required>
+                      <label for="email" class="required-field">Email Address</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                      <input type="tel" name="phone" [(ngModel)]="newEnquiry.phone" class="form-control" id="phone" placeholder=" " required>
+                      <label for="phone" class="required-field">Phone Number</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-floating mb-4">
+                  <textarea class="form-control" name="message" [(ngModel)]="newEnquiry.message" id="message" style="height: 150px" placeholder=" " required></textarea>
+                  <label for="message" class="required-field">Message</label>
+                </div>
+
+                <div class="form-floating mb-4">
+                  <textarea class="form-control" name="resolution" [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px" placeholder=" " required></textarea>
+                  <label for="resolution" class="required-field">resolution</label>
+                </div>
+
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary mt-3" [disabled]="loading || !formRef.valid">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {{ loading ? 'Saving...' : 'Submit' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
