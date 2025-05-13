@@ -55,7 +55,10 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
         this.getStatusLabelLower(enquiry.enquiryStatusId).includes(lowerTerm) ||
         enquiry.customerName.toLowerCase().includes(lowerTerm) ||
         enquiry.phone.includes(lowerTerm) ||
-        enquiry.email.toLowerCase().includes(lowerTerm)
+        enquiry.email.toLowerCase().includes(lowerTerm) ||
+        enquiry.folio?.toLowerCase().includes(lowerTerm) ||
+        enquiry.createdBy?.toLowerCase().includes(lowerTerm) ||
+        enquiry.updatedBy?.toLowerCase().includes(lowerTerm)
       )
     );
 
@@ -203,10 +206,11 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     const list = this.hasSearchTerm ? this.filteredEnquiries : this.enquiryList;
 
     list.sort((a, b) => {
-      const dateA = new Date(a.createdDate).getTime();
-      const dateB = new Date(b.createdDate).getTime();
+      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
       return this.orderAsc ? dateA - dateB : dateB - dateA;
     });
   }
+
 
 }

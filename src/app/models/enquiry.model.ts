@@ -6,8 +6,14 @@ export interface Enquiry {
   phone: string;
   email: string;
   message: string;
-  createdDate: Date;
-  resolution: string;
+  createdDate?: string;
+  resolution?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+  folio?: string;
+  costo?: number;
+  dueDate?: string;
 }
 
 // Optional: Enum for enquiry types

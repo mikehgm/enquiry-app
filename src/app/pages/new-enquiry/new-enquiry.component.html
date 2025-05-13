@@ -11,10 +11,49 @@
               </h1>
             </div>
             <div class="card-body p-4 p-lg-5">
+              <div class="d-flex gap-2 mb-4 justify-content-end" *ngIf="isEdit">
+                <button
+                  class="btn btn-warning btn-status"
+                  (click)="updateStatus(2)"
+                  [disabled]="newEnquiry.enquiryStatusId === 2"
+                  [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === 2 }">
+                  <i class="fas fa-spinner me-1"></i> In Progress
+                </button>
+
+                <button
+                  class="btn btn-secondary btn-status"
+                  (click)="updateStatus(3)"
+                  [disabled]="newEnquiry.enquiryStatusId === 3"
+                  [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === 3 }">
+                  <i class="fas fa-pause-circle me-1"></i> On Hold
+                </button>
+
+                <button
+                  class="btn btn-success btn-status"
+                  (click)="updateStatus(4)"
+                  [disabled]="newEnquiry.enquiryStatusId === 4"
+                  [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === 4 }">
+                  <i class="fas fa-check-circle me-1"></i> Resolved
+                </button>
+              </div>
+
               <form (ngSubmit)="onSubmit()" #formRef="ngForm">
+                <div class="form-floating mb-3">
+                  <input
+                        type="text"
+                        name="folio"
+                        [(ngModel)]="newEnquiry.folio"
+                        class="form-control"
+                        id="folio"
+                        placeholder="Folio"
+                        disabled="true"
+                        readonly>
+                      <label for="folio">Folio</label>
+                </div>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-floating mb-3">
+
                       <select class="form-select" name="enquiryTypeId" [(ngModel)]="newEnquiry.enquiryTypeId" id="enquiryTypeId" required>
                         <option value="">Select Enquiry Type</option>
                         @for (type of typeList | async; track $index) {
@@ -66,6 +105,36 @@
                 <div class="form-floating mb-4">
                   <textarea class="form-control" name="resolution" [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px" placeholder=" " ></textarea>
                   <label for="resolution" class="required-field">resolution</label>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-floating mb-3 position-relative">
+                      <input
+                        type="number"
+                        name="costo"
+                        step="0.01"
+                        min="0"
+                        [(ngModel)]="newEnquiry.costo"
+                        class="form-control ps-5"
+                        id="costo"
+                        placeholder="Costo">
+                      <label for="costo">Costo</label>
+                      <span class="position-absolute money-symbol translate-middle-y ms-3 text-muted">$</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                      <input
+                        type="date"
+                        name="fechaEntrega"
+                        [(ngModel)]="newEnquiry.dueDate"
+                        class="form-control"
+                        id="fechaEntrega"
+                        placeholder="Fecha de entrega">
+                      <label for="fechaEntrega">Fecha de Entrega</label>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="d-grid">

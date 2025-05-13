@@ -26,7 +26,7 @@ export class EnquiryDataService {
     return this.http.get(`${environment.apiUrl}/EnquiryData/GetAllStatus`);
   }
 
-  updateEnquiry(enquiry: Enquiry) {
+  updateEnquiry(enquiry: Partial<Enquiry>) {
     return this.http.put(`${environment.apiUrl}/EnquiryData/UpdateEnquiry`, enquiry);
   }
 
@@ -35,7 +35,7 @@ export class EnquiryDataService {
   }
 
   // This method is used to create a new enquiry
-  createEnquiry(enquiry: any) {
-    return this.http.post(`${environment.apiUrl}/EnquiryData/CreateNewEnquiry`, enquiry);
+  createEnquiry(enquiry: Enquiry) {
+    return this.http.post<Enquiry>(`${environment.apiUrl}/EnquiryData/CreateNewEnquiry`, enquiry);
   }
 }

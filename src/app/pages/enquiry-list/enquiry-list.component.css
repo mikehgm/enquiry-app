@@ -14,3 +14,12 @@
   .badge-progress  { background-color: #ffc107; }  /* In progress */
   .badge-hold      { background-color: #6c757d; }  /* On hold */
   .badge-resolved  { background-color: #198754; }  /* Resolved */
+
+  .due-date-box {
+    font-weight: bold;
+    font-size: 0.95rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    min-width: 180px;
+    text-align: center;
+    color: #fff;
+  }

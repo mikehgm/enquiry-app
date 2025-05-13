@@ -1,3 +1,24 @@
-.btn.disabled, .btn:disabled, fieldset:disabled {
+.btn.disabled, .btn:disabled, fieldset:disabled, .btn.disabled:hover {
   cursor: not-allowed;
+}
+
+.btn-status {
+  height: 50px;
+}
+
+.btn-status:disabled {
+  cursor: not-allowed;
+}
+
+
+.not-allowed {
+  cursor: not-allowed;
+}
+
+.no-drop {
+  cursor: no-drop;
+}
+
+.money-symbol {
+  top: 38px;
 }

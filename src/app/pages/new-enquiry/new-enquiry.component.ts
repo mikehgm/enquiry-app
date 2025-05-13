@@ -28,8 +28,15 @@ export class NewEnquiryComponent implements OnInit {
     phone: '',
     email: '',
     message: '',
-    createdDate: new Date(),
-    resolution: ''
+    createdDate: '',
+    resolution: '',
+    createdBy: '',
+    updatedBy: '',
+    updatedAt: '',
+    folio: '',
+    costo: 0,
+    dueDate: ''
+
   }
   public loading = false;
   public isEdit = false;
@@ -43,7 +50,18 @@ export class NewEnquiryComponent implements OnInit {
       this.isEdit = true;
       this.enquiryIdToEdit = Number(idParam);
       this.enquiryDataService.getEnquiryById(this.enquiryIdToEdit).subscribe({
-        next: (data: Enquiry) => this.newEnquiry = data,
+        next: (data: Enquiry) =>  {
+          console.log('Enquiry data:', data);
+          if (data.dueDate) {
+            const fecha = new Date(data.dueDate);
+            const year = fecha.getFullYear();
+            const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
+            const day = fecha.getDate().toString().padStart(2, '0');
+
+            data.dueDate = `${year}-${month}-${day}`; // yyyy-MM-dd (string)
+          }
+          this.newEnquiry = data
+        },
         error: (err) => {
           console.error('Error fetching enquiry:', err);
           this.alert.error('Error al leer el registro', 'Hubo un error inesperado, favor de intentar de nuevo.');
@@ -61,7 +79,7 @@ export class NewEnquiryComponent implements OnInit {
     this.loading = true;
 
     if (this.isEdit) {
-      this.enquiryDataService.updateEnquiry(this.newEnquiry).subscribe({
+      this.enquiryDataService.updateEnquiry(this.toDto(this.newEnquiry)).subscribe({
         next: () => {
           this.alert.success(this.isEdit ? 'Enquiry actualizado' : 'Enquiry creado', this.isEdit
               ? 'Los cambios fueron guardados correctamente.'
@@ -78,9 +96,11 @@ export class NewEnquiryComponent implements OnInit {
     } else {
       console.log(this.newEnquiry);
       this.enquiryDataService.createEnquiry(this.newEnquiry).subscribe({
-        next: (response) => {
+        next: (response: Enquiry) => {
           console.log(response);
+          this.newEnquiry = response
           this.alert.success('Guardado correctamente', 'El registro fue guardado exitosamente.');
+          this.loading = false;
         },
         error: (error) => {
           this.alert.error('Error al crear el registro', 'Hubo un error inesperado, favor de intentar de nuevo.');
@@ -90,4 +110,38 @@ export class NewEnquiryComponent implements OnInit {
       });
     }
   }
+
+  updateStatus(statusId: number): void {
+
+    if (statusId === 4 && !this.newEnquiry.resolution) {
+      this.alert.error('Falta información', 'Agrega una resolución antes de marcar como Resuelto.');
+      return;
+    }
+
+    if ((statusId === 2 || statusId === 3) && !this.newEnquiry.message) {
+      this.alert.error('Falta mensaje', 'Agrega un mensaje antes de actualizar el estado.');
+      return;
+    }
+
+    this.newEnquiry.enquiryStatusId = statusId;
+
+    // Guardar el cambio como si fuera un submit
+    this.enquiryDataService.updateEnquiry(this.toDto(this.newEnquiry)).subscribe({
+      next: () => {
+        this.alert.success('Enquiry actualizado');
+      },
+      error: () => {
+        this.alert.error('Error', 'No se pudo actualizar el estado del enquiry');
+      }
+    });
+  }
+
+  toDto(enquiry: Enquiry): Partial<Enquiry> {
+    const {
+      enquiryId, enquiryTypeId, enquiryStatusId, customerName,
+      phone, email, message, resolution, costo, dueDate
+    } = enquiry;
+    return { enquiryId, enquiryTypeId, enquiryStatusId, customerName, phone, email, message, resolution, costo, dueDate };
+  }
+
 }
