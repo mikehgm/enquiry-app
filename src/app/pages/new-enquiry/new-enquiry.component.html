@@ -3,7 +3,12 @@
         <div class="col-lg-8 col-md-10">
           <div class="card">
             <div class="card-header text-white">
-              <h1 class="h3 mb-2">New Enquiry</h1>
+              <h1 class="d-flex align-items-center mb-4">
+                <i [ngClass]="isEdit ? 'fas fa-edit' : 'fas fa-inbox'"
+                  class="me-2 fs-3">
+                </i>
+                {{ isEdit ? 'Edit Enquiry' : 'New Enquiry' }}
+              </h1>
             </div>
             <div class="card-body p-4 p-lg-5">
               <form (ngSubmit)="onSubmit()" #formRef="ngForm">
@@ -22,7 +27,7 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-floating mb-3">
-                      <select class="form-select" name="enquiryStatusId" [(ngModel)]="newEnquiry.enquiryStatusId" id="enquiryStatusId" required>
+                      <select class="form-select" name="enquiryStatusId" [(ngModel)]="newEnquiry.enquiryStatusId" id="enquiryStatusId" required [disabled]="!isEdit">
                         <option value="">Select Status</option>
                         @for (status of statusList | async; track $index) {
                           <option [value]="status.statusId">{{ status.status }}</option>
@@ -59,7 +64,7 @@
                 </div>
 
                 <div class="form-floating mb-4">
-                  <textarea class="form-control" name="resolution" [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px" placeholder=" " required></textarea>
+                  <textarea class="form-control" name="resolution" [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px" placeholder=" " ></textarea>
                   <label for="resolution" class="required-field">resolution</label>
                 </div>
 

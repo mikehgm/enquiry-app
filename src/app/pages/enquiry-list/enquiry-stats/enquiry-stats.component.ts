@@ -21,4 +21,14 @@ export class EnquiryStatsComponent {
   onStatusClick(statusId: number): void {
     this.statusFilter.emit(statusId);
   }
+
+  getStatusIcon(status: number): string {
+    switch (status) {
+      case 1: return 'fas fa-inbox';
+      case 2: return 'fas fa-spinner';
+      case 3: return 'fas fa-pause-circle';
+      case 4: return 'fas fa-check-circle';
+      default: return 'fas fa-question-circle';
+    }
+  }
 }

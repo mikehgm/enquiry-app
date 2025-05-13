@@ -6,6 +6,7 @@ import { SearchDataService } from '../../service/search-data.service';
 import { Enquiry } from '../../models/enquiry.model';
 import { Subject, takeUntil } from 'rxjs';
 import { EnquiryStatsComponent } from "./enquiry-stats/enquiry-stats.component";
+import { AlertService } from '../../service/alert.service';
 
 @Component({
   selector: 'app-enquiry-list',
@@ -15,15 +16,15 @@ import { EnquiryStatsComponent } from "./enquiry-stats/enquiry-stats.component";
 })
 export class EnquiryListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  private enquiryDataService = inject(EnquiryDataService);
-  private searchDataService = inject(SearchDataService);
   public enquiryList: Enquiry[] = [];
   public filteredEnquiries: Enquiry[] = [];
   public hasSearchTerm: boolean = false;
   public selectedStatusFilter: number | null = null;
   public currentPage: number = 1;
   public itemsPerPage: number = 12;
+  public orderAsc = true;
 
+  constructor(private enquiryDataService: EnquiryDataService, private searchDataService: SearchDataService, private alert: AlertService) {}
 
   ngOnInit(): void {
     this.getEnquiryList();
@@ -57,6 +58,8 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
         enquiry.email.toLowerCase().includes(lowerTerm)
       )
     );
+
+    this.sortEnquiriesByDate();
 
     this.currentPage = 1;
   }
@@ -105,12 +108,28 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getStatusIcon(statusId: number): string {
+    switch (statusId) {
+      case 1: return 'fas fa-inbox';
+      case 2: return 'fas fa-spinner';
+      case 3: return 'fas fa-pause-circle';
+      case 4: return 'fas fa-check-circle';
+      default: return 'fas fa-question-circle';
+    }
+  }
+
   public getEnquiryList(): void {
     this.enquiryDataService.getEnquiryList()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => this.enquiryList = response,
-        error: (err) => console.error(err)
+        next: (response) => {
+          this.enquiryList = response
+          this.sortEnquiriesByDate();
+        },
+        error: (err) => {
+          console.error(err)
+           this.alert.error('Error', 'No se pudo obtener el listado de enquiries.');
+        }
       });
   }
 
@@ -118,20 +137,28 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     // Confirm deletion
     if (enquiryId !== 0) {
     // Show confirmation dialog
-      const confirmDelete = confirm('Are you sure you want to delete this enquiry?');
-      if (confirmDelete) {
-        this.enquiryDataService.deleteEnquiry(enquiryId).subscribe({
-          next: () => {
-            // Remove the deleted enquiry from the list
-            this.getEnquiryList();
-            alert('Enquiry deleted successfully');
-        },
-          error: (err) => console.error('Error deleting enquiry:', err)
-        });
-      }
+      this.alert.confirm({
+        title: '¿Eliminar enquiry?',
+        text: 'Esta acción no se puede deshacer.',
+        confirmColor: '#dc3545'
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.enquiryDataService.deleteEnquiry(enquiryId).subscribe({
+            next: () => {
+              this.getEnquiryList();
+              this.alert.success('Eliminado', 'El enquiry ha sido eliminado.');
+
+            },
+            error: (err) => {
+              console.error('Error deleting enquiry:', err);
+              this.alert.error('Error', 'No se pudo eliminar el enquiry.');
+            }
+          });
+        }
+      });
     }
     else {
-      alert('Enquiry ID is invalid');
+      this.alert.error('Error', 'Enquiry ID invalido.');
     }
   }
 
@@ -146,6 +173,7 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
       this.selectedStatusFilter = statusId;
       this.hasSearchTerm = true;
       this.filterEnquiries('', statusId);
+      this.sortEnquiriesByDate()
     }
 
     this.currentPage = 1;
@@ -164,6 +192,21 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
     }
+  }
+
+  public toggleOrder(): void {
+    this.orderAsc = !this.orderAsc;
+    this.sortEnquiriesByDate();
+  }
+
+  sortEnquiriesByDate(): void {
+    const list = this.hasSearchTerm ? this.filteredEnquiries : this.enquiryList;
+
+    list.sort((a, b) => {
+      const dateA = new Date(a.createdDate).getTime();
+      const dateB = new Date(b.createdDate).getTime();
+      return this.orderAsc ? dateA - dateB : dateB - dateA;
+    });
   }
 
 }

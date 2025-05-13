@@ -1,7 +1,6 @@
-<!-- enquiry-stats.component.html -->
 <div class="row mb-4">
   <div class="col-md-3" *ngFor="let status of [1, 2, 3, 4]">
-    <div class="p-3 text-white rounded d-flex justify-content-between align-items-center stat-container"
+    <div class="p-3 text-white rounded d-flex justify-content-between align-items-center position-relative stat-container"
       (click)="onStatusClick(status)"
       [ngClass]="{
         'badge-new': status === 1,
@@ -10,15 +9,22 @@
         'badge-resolved': status === 4,
         'active-box': selectedStatusId === status
       }">
-      <h5 class="mb-0">
-        {{
-          status === 1 ? 'New' :
-          status === 2 ? 'In Progress' :
-          status === 3 ? 'On Hold' :
-          'Resolved'
-        }}
-      </h5>
-      <p class="mb-0 fs-3 fw-bold">{{ countByStatus(status) }}</p>
+
+      <!-- Icono de fondo -->
+      <i [ngClass]="getStatusIcon(status)" class="icon-bg"></i>
+
+      <!-- Contenido encima del ícono -->
+      <div class="w-100 d-flex justify-content-between align-items-center position-relative" style="z-index: 2;">
+        <h2 class="mb-0">
+          {{
+            status === 1 ? 'New' :
+            status === 2 ? 'In Progress' :
+            status === 3 ? 'On Hold' :
+            'Resolved'
+          }}
+        </h2>
+        <p class="mb-0 fs-1 fw-bold">{{ countByStatus(status) }}</p>
+      </div>
     </div>
   </div>
 </div>

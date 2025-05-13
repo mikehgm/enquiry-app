@@ -6,6 +6,7 @@ import { EnquiryDataService } from '../../service/enquiry-data.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { Enquiry } from '../../models/enquiry.model';
+import { AlertService } from '../../service/alert.service';
 
 @Component({
   selector: 'app-new-enquiry',
@@ -34,7 +35,7 @@ export class NewEnquiryComponent implements OnInit {
   public isEdit = false;
   public enquiryIdToEdit: number | null = null;
 
-  constructor() { }
+  constructor(private alert: AlertService) { }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -43,8 +44,13 @@ export class NewEnquiryComponent implements OnInit {
       this.enquiryIdToEdit = Number(idParam);
       this.enquiryDataService.getEnquiryById(this.enquiryIdToEdit).subscribe({
         next: (data: Enquiry) => this.newEnquiry = data,
-        error: (err) => console.error('Error fetching enquiry:', err)
+        error: (err) => {
+          console.error('Error fetching enquiry:', err);
+          this.alert.error('Error al leer el registro', 'Hubo un error inesperado, favor de intentar de nuevo.');
+        }
       });
+    } else {
+      this.newEnquiry.enquiryStatusId = 1;
     }
 
     this.typeList = this.enquiryDataService.getAllTypes();
@@ -57,11 +63,15 @@ export class NewEnquiryComponent implements OnInit {
     if (this.isEdit) {
       this.enquiryDataService.updateEnquiry(this.newEnquiry).subscribe({
         next: () => {
-          alert('Enquiry updated successfully');
+          this.alert.success(this.isEdit ? 'Enquiry actualizado' : 'Enquiry creado', this.isEdit
+              ? 'Los cambios fueron guardados correctamente.'
+              : 'El nuevo enquiry fue agregado con éxito.');
+
           this.loading = false;
         },
         error: (err) => {
-          alert('Error updating enquiry');
+          console.error('Error update enquiry:', err);
+          this.alert.error('Error al guardar los cambios', 'Hubo un error inesperado, favor de intentar de nuevo.');
           this.loading = false;
         }
       });
@@ -70,13 +80,11 @@ export class NewEnquiryComponent implements OnInit {
       this.enquiryDataService.createEnquiry(this.newEnquiry).subscribe({
         next: (response) => {
           console.log(response);
-          alert('Enquiry Created Successfully');
-          this.loading = false;
-          // Optionally reset form here
+          this.alert.success('Guardado correctamente', 'El registro fue guardado exitosamente.');
         },
         error: (error) => {
+          this.alert.error('Error al crear el registro', 'Hubo un error inesperado, favor de intentar de nuevo.');
           console.error(error);
-          alert('Error creating enquiry');
           this.loading = false;
         }
       });

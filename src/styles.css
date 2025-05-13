@@ -1,46 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
 body {
-        font-family: 'Inter', sans-serif;
-        background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
-        min-height: 100vh;
-      }
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
+  min-height: 100vh;
+}
 
-      .card {
-        border: none;
-        border-radius: 1rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
+.card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
 
-      .card-header {
-        background: #3b82f6;
-        border-radius: 1rem 1rem 0 0;
-        padding: 2rem;
-      }
+.card-header {
+  background: #3b82f6;
+  border-radius: 1rem 1rem 0 0;
+  padding: 2rem;
+}
 
-      .form-floating > label {
-        color: #64748b;
-      }
+.form-floating > label {
+  color: #64748b;
+}
 
-      .form-control:focus,
-      .form-select:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
-      }
+.form-control:focus,
+.form-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+}
 
-      .required-field::after {
-        content: "*";
-        color: #ef4444;
-        margin-left: 2px;
-      }
+.required-field::after {
+  content: "*";
+  color: #ef4444;
+  margin-left: 2px;
+}
 
-      .btn-primary {
-        background-color: #3b82f6;
-        border-color: #3b82f6;
-        padding: 0.75rem 1.5rem;
-        font-weight: 500;
-      }
+.btn-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+}
 
-      .btn-primary:hover {
-        background-color: #2563eb;
-        border-color: #2563eb;
-      }
+.btn-primary:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+

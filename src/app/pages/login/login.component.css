@@ -1,0 +1,40 @@
+/* Fondo global */
+::ng-deep body {
+  background: linear-gradient(to right, #74ebd5, #9face6);
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Centrado del formulario (ya lo haces desde HTML con Bootstrap) */
+.d-flex {
+  min-height: 100vh;
+}
+
+/* Tarjeta de login */
+::ng-deep .card {
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Botón de login */
+::ng-deep button.btn {
+  transition: all 0.3s ease;
+}
+
+::ng-deep button.btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
+
+/* Input en focus */
+::ng-deep .form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Íconos en input group */
+::ng-deep .input-group-text {
+  background-color: #e9ecef;
+}
