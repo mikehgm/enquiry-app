@@ -22,7 +22,7 @@ export class ConfirmAccountComponent implements OnInit {
       const token = params['token'];
 
       if (token) {
-        this.http.get(`${environment.apiUrl}/auth/confirm?token=${token}`).subscribe({
+        this.http.get(`${environment.apiUrl}/api/auth/confirm?token=${token}`).subscribe({
           next: () => {
             this.alert.success('Cuenta confirmada', 'Tu cuenta ha sido verificada con éxito.');
             this.router.navigate(['/login']);

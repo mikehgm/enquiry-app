@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark navbar-expand-custom">
   <div class="container-fluid">
     <a class="navbar-brand" href="javascript:void(0)">Enquiry App</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
@@ -7,14 +7,19 @@
     <div class="collapse navbar-collapse" id="mynavbar" *ngIf="authService.isLoggedIn()">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/">List</a>
+          <a class="nav-link" routerLink="/">Enquiries</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="enquiry/new">New Enquiry</a>
         </li>
+        <li class="nav-item" *ngIf="isAdmin" >
+          <a class="nav-link" routerLink="/admin/reports">
+            Reports
+          </a>
+        </li>
         <li class="nav-item" *ngIf="isAdmin">
           <a class="nav-link" routerLink="/admin-users">
-            Administrar Usuarios
+            Admin Users
           </a>
         </li>
       </ul>
@@ -26,7 +31,7 @@
           type="text" placeholder="Search">
         <button
           (click)="onSearchChange()"
-          class="btn btn-primary me-2"
+          class="btn btn-primary me-2 btn-search"
           type="button"><i class="fas fa-search me-1"></i></button>
         <button
           *ngIf="searchTerm"
@@ -37,8 +42,8 @@
         </button>
       </form>
 
-      <button class="btn btn-outline-light btn-sm" (click)="logout()">
-        <i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+      <button class="btn btn-dark me-2" (click)="logout()">
+        <i class="fas fa-sign-out-alt me-1"></i></button>
     </div>
   </div>
 </nav>

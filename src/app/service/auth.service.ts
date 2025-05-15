@@ -14,7 +14,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post<{ token: string }>(`${environment.apiUrl}/Auth/login`, credentials);
+    return this.http.post<{ token: string }>(`${environment.apiUrl}/api/Auth/login`, credentials);
   }
 
   saveToken(token: string): void {
@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   changePassword(newPassword: string) {
-    return this.http.post(`${environment.apiUrl}/Auth/change-password`, { newPassword });
+    return this.http.post(`${environment.apiUrl}/api/Auth/change-password`, { newPassword });
   }
 
 }

@@ -7,6 +7,7 @@ import { Enquiry } from '../../models/enquiry.model';
 import { Subject, takeUntil } from 'rxjs';
 import { EnquiryStatsComponent } from "./enquiry-stats/enquiry-stats.component";
 import { AlertService } from '../../service/alert.service';
+import { SignalRService } from '../../service/signlr.service';
 
 @Component({
   selector: 'app-enquiry-list',
@@ -24,7 +25,11 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
   public itemsPerPage: number = 12;
   public orderAsc = true;
 
-  constructor(private enquiryDataService: EnquiryDataService, private searchDataService: SearchDataService, private alert: AlertService) {}
+  constructor(
+    private enquiryDataService: EnquiryDataService,
+    private searchDataService: SearchDataService,
+    private alert: AlertService,
+    private signalRService: SignalRService) {}
 
   ngOnInit(): void {
     this.getEnquiryList();
@@ -35,6 +40,13 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
         this.selectedStatusFilter = null; // reset filter if search is used
         this.hasSearchTerm = !!term;
         this.filterEnquiries(term);
+      });
+
+    this.signalRService.enquiryChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        console.log('⚡ Refreshing enquiries...');
+        this.getEnquiryList();
       });
   }
 
@@ -147,7 +159,8 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
       }).then(result => {
         if (result.isConfirmed) {
           this.enquiryDataService.deleteEnquiry(enquiryId).subscribe({
-            next: () => {
+            next: (res) => {
+              console.log('Enquiry deleted:', res);
               this.getEnquiryList();
               this.alert.success('Eliminado', 'El enquiry ha sido eliminado.');
 

@@ -1,0 +1,42 @@
+<div class="container mt-5" *ngIf="enquiry">
+  <div id="ticket-content" class="card shadow border-1 mx-auto ticket-container">
+    <div class="card-header bg-dark text-white text-center">
+      <h4 class="mb-0">🧾 ENQUIRY TICKET</h4>
+    </div>
+    <div class="card-body">
+      <p>Compnay Name</p>
+      <p>Calle primera, el centro #1234, CP 12345, Ciudad, Estado</p>
+      <p>Sucursal 123</p>
+      <p><strong>Folio:</strong><p>
+      <h3>{{ enquiry.folio }}</h3>
+      <p><strong>Cliente:</strong> {{ enquiry.customerName }}</p>
+      <p><strong>Teléfono:</strong> {{ enquiry.phone }}</p>
+      <p><strong>Email:</strong> {{ enquiry.email }}</p>
+      <hr>
+      <p><strong>Servicio:</strong> {{ getTypeLabel(enquiry.enquiryTypeId) }}</p>
+      <p><strong>Mensaje:</strong><br> {{ enquiry.message }}</p>
+      <hr>
+      <p><strong>Costo:</strong></p>
+      <h3>${{ enquiry.costo?.toFixed(2) }}</h3>
+      <hr>
+      <p><strong>Entrega:</strong> {{ enquiry.dueDate | date }}</p>
+      <p><strong>Atendi&oacute;:</strong> {{ enquiry.createdBy }}</p>
+      <p><strong>Fecha de creaci&oacute;n:</strong> {{ enquiry.createdDate | date }}</p>
+      <hr>
+      <p>Gracias por su preferencia</p>
+      <p>Para informacion de nuestros servicios puede visitar nuestra pagina web</p>
+      <p>https://www.dominio.com</p>
+    </div>
+  </div>
+  <aside class="ticket-aside">
+    <button class="btn btn-primary w-100 mb-2 btn-ticket" (click)="sendByEmail()">
+      <i class="fas fa-envelope me-1"></i> Email
+    </button>
+    <button class="btn btn-success w-100 mb-2 btn-ticket" (click)="sendByWhatsApp()">
+      <i class="fab fa-whatsapp me-1"></i> WhatsApp
+    </button>
+    <button class="btn btn-secondary w-100 btn-ticket">
+      <i class="fa-solid fa-print"></i> Imprimir
+    </button>
+  </aside>
+</div>

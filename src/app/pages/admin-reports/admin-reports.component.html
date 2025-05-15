@@ -1,0 +1,141 @@
+<div class="container mt-5">
+  <h2 class="mb-4">📊 Enquiry Summary by Status</h2>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <form class="row g-3 align-items-end" (ngSubmit)="applyDateFilter()">
+        <div class="col-md-5">
+          <label for="fromDate" class="form-label">From</label>
+          <input type="date" id="fromDate" class="form-control" [(ngModel)]="filter.from" name="from">
+        </div>
+        <div class="col-md-5">
+          <label for="toDate" class="form-label">To</label>
+          <input type="date" id="toDate" class="form-control" [(ngModel)]="filter.to" name="to">
+        </div>
+        <div class="col-md-2 d-grid">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-filter me-1"></i> Filter
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3" *ngFor="let s of summaryByStatus">
+      <div class="p-3 text-white rounded text-center mb-3" [ngClass]="s.class">
+        <h5>{{ s.label }}</h5>
+        <p class="fs-3 mb-0">{{ s.count }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <app-status-chart [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"></app-status-chart>
+    </div>
+    <div class="col-md-4">
+      <app-monthly-trend-chart [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"></app-monthly-trend-chart>
+    </div>
+    <div class="col-md-4">
+      <app-revenue-chart [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"></app-revenue-chart>
+    </div>
+  </div>
+
+  <div *ngIf="showFullTable" class="mt-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+      <h4 class="mb-0">
+        📄 Enquiries {{ filteredList.length > 0 ? 'in Date Range' : 'List' }}
+        <span class="badge bg-dark ms-2">
+          {{ (filteredList.length > 0 ? filteredList.length : enquiryList.length) }} total
+        </span>
+      </h4>
+
+      <div class="d-flex gap-2 mt-2 mt-md-0">
+        <button class="btn btn-success" (click)="exportToExcel()">
+          <i class="fas fa-file-excel me-1"></i> Export to Excel
+        </button>
+        <button class="btn btn-secondary" (click)="exportToCSV()">
+          <i class="fas fa-file-csv me-1"></i> Export to CSV
+        </button>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end align-items-center gap-2 mb-2">
+      <label for="itemsPerPage" class="form-label mb-0">Show:</label>
+      <select id="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
+              [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+      </select>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th (click)="setSort('folio')" style="cursor:pointer">
+              Folio <i *ngIf="sortColumn === 'folio'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+            </th>
+            <th (click)="setSort('customerName')" style="cursor:pointer">
+              Customer <i *ngIf="sortColumn === 'customerName'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+            </th>
+            <th (click)="setSort('email')" style="cursor:pointer">
+              Email <i *ngIf="sortColumn === 'email'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+            </th>
+            <th (click)="setSort('enquiryTypeId')" style="cursor:pointer">
+              Type <i *ngIf="sortColumn === 'enquiryTypeId'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+            </th>
+            <th>Status</th>
+
+            <th (click)="setSort('createdDate')" style="cursor:pointer">
+              Created <i *ngIf="sortColumn === 'createdDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+            </th>
+            <th (click)="setSort('dueDate')" style="cursor:pointer">
+              Due Date <i *ngIf="sortColumn === 'dueDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of pagedList()">
+            <td>{{ e.folio }}</td>
+            <td>{{ e.customerName }}</td>
+            <td>{{ e.email }}</td>
+            <td>{{ getTypeLabel(e.enquiryTypeId) }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(e.enquiryStatusId)">
+                {{ getStatusLabel(e.enquiryStatusId) }}
+              </span>
+            </td>
+            <td>{{ e.createdDate | date:'shortDate' }}</td>
+            <td><i class="fa-regular fa-calendar me-1"></i>{{ e.dueDate | date:'shortDate' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <nav *ngIf="totalPages() > 1" class="mt-3">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
+              Previous
+            </button>
+          </li>
+
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages()); let i = index"
+              [class.active]="currentPage === i + 1">
+            <button class="page-link" (click)="currentPage = i + 1">{{ i + 1 }}</button>
+          </li>
+
+          <li class="page-item" [class.disabled]="currentPage === totalPages()">
+            <button class="page-link" (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages()">
+              Next
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+
+
+</div>

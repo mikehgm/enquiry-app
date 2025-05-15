@@ -8,6 +8,8 @@ import { ChangePasswordComponent } from './pages/change-password/change-password
 import { ConfirmAccountComponent } from './pages/confirm-account/confirm-account.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
+import { AdminReportsComponent } from './pages/admin-reports/admin-reports.component';
+import { EnquiryTicketComponent } from './pages/enquiry-ticket/enquiry-ticket.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -27,6 +29,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'enquiry/ticket/:id',
+    component: EnquiryTicketComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'admin-users',
     canActivate: [AuthGuard, AdminGuard],
     children: [
@@ -34,6 +41,11 @@ export const routes: Routes = [
       { path: 'create', component: UserFormComponent },
       { path: 'edit/:id', component: UserFormComponent }
     ]
+  },
+  {
+    path: 'admin/reports',
+    component: AdminReportsComponent,
+    canActivate: [AuthGuard, AdminGuard]
   },
   {
     path: 'confirm-account',

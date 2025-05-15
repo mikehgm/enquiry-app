@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EnquiryDataService } from '../../service/enquiry-data.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -10,7 +10,7 @@ import { AlertService } from '../../service/alert.service';
 
 @Component({
   selector: 'app-new-enquiry',
-  imports: [FormsModule, CommonModule, AsyncPipe],
+  imports: [FormsModule, CommonModule, AsyncPipe, RouterLink],
   templateUrl: './new-enquiry.component.html',
   styleUrl: './new-enquiry.component.css'
 })

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./shared/header/header.component";
 import { SearchDataService } from './service/search-data.service';
+import { SignalRService } from './service/signlr.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,14 @@ import { SearchDataService } from './service/search-data.service';
 export class AppComponent {
   title = 'enquiry-app';
 
-  constructor(private searchDataService: SearchDataService) {}
+  constructor(private searchDataService: SearchDataService, private signalRService: SignalRService) {}
+
+  ngOnInit() {
+    this.signalRService.startConnection();
+  }
+  ngOnDestroy() {
+    this.signalRService.stopConnection();
+  }
 
   onSearchChanged(searchTerm: string) {
     this.searchDataService.setSearchTerm(searchTerm);

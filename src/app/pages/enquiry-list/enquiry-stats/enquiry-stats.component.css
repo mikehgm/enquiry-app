@@ -1,10 +1,11 @@
-.badge-new       { background-color: #0d6efd; }  /* New */
+.badge-new       { background-color: #0d6efd; }   /* New */
 .badge-progress  { background-color: #ffc107; color: #212529; }  /* In Progress */
-.badge-hold      { background-color: #6c757d; }  /* On Hold */
-.badge-resolved  { background-color: #198754; }  /* Resolved */
+.badge-hold      { background-color: #6c757d; }   /* On Hold */
+.badge-resolved  { background-color: #198754; }   /* Resolved */
 
-.fs-3 { font-size: 1.75rem; } /* or adjust to fs-4/fs-2 based on preference */
+.fs-3 { font-size: 1.75rem; }
 .fw-bold { font-weight: bold; }
+
 .active-box {
   outline: 3px solid #ffffffaa;
   box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
@@ -23,4 +24,28 @@
   bottom: 5px;
   z-index: 1;
   pointer-events: none;
+}
+
+/* ✅ Layout adaptable en tablets/móviles */
+.stat-box h2 {
+  font-size: 2rem;
+}
+
+.stat-box p {
+  font-size: 3rem;
+}
+
+@media (max-width: 991.98px) { /* tablets y menor (Bootstrap md) */
+  .stat-box {
+    flex-direction: column !important;
+    gap: 0.5rem;
+  }
+
+  .stat-box h2 {
+    font-size: 1.5rem;
+  }
+
+  .stat-box p {
+    font-size: 2.5rem;
+  }
 }

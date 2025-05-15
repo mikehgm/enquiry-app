@@ -1,0 +1,226 @@
+import { Component } from '@angular/core';
+import { Enquiry } from '../../models/enquiry.model';
+import { EnquiryDataService } from '../../service/enquiry-data.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
+import { StatusChartComponent } from './status-chart/status-chart.component';
+import { MonthlyTrendChartComponent } from "./monthly-trend-chart/monthly-trend-chart.component";
+import { RevenueChartComponent } from "./revenue-chart/revenue-chart.component";
+
+@Component({
+  selector: 'app-admin-reports',
+  imports: [CommonModule, FormsModule, StatusChartComponent, MonthlyTrendChartComponent, RevenueChartComponent],
+  templateUrl: './admin-reports.component.html',
+  styleUrl: './admin-reports.component.css'
+})
+export class AdminReportsComponent {
+
+  enquiryList: Enquiry[] = [];
+  summaryByStatus: { label: string; count: number; class: string }[] = [];
+  filter = {
+    from: '',
+    to: ''
+  };
+  filteredList: Enquiry[] = [];
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+
+  constructor(private enquiryService: EnquiryDataService) {}
+
+  ngOnInit(): void {
+    this.enquiryService.getEnquiryList().subscribe({
+      next: (list) => {
+        this.enquiryList = list;
+        this.generateSummary();
+      }
+    });
+  }
+
+  generateSummary(): void {
+    const statusMap = new Map<number, { label: string; class: string }>([
+      [1, { label: 'New', class: 'bg-primary' }],
+      [2, { label: 'In Progress', class: 'bg-warning text-dark' }],
+      [3, { label: 'On Hold', class: 'bg-secondary' }],
+      [4, { label: 'Resolved', class: 'bg-success' }]
+    ]);
+
+    const baseList = this.filteredList.length > 0 ? this.filteredList : this.enquiryList;
+
+    this.summaryByStatus = Array.from(statusMap.entries()).map(([statusId, meta]) => {
+      const count = baseList.filter(e => e.enquiryStatusId === statusId).length;
+      return { ...meta, count };
+    });
+  }
+
+  applyDateFilter(): void {
+    if (!this.filter.from && !this.filter.to) {
+      this.filteredList = [];
+      this.generateSummary();
+      return;
+    }
+
+    const from = this.filter.from ? new Date(this.filter.from + 'T00:00:00') : null;
+    const to = this.filter.to ? new Date(this.filter.to + 'T23:59:59') : null;
+
+    this.filteredList = this.enquiryList.filter(enquiry => {
+      const dueDate = enquiry.dueDate ? new Date(enquiry.dueDate) : null;
+      const createdDate = enquiry.createdDate ? new Date(enquiry.createdDate) : null;
+
+      const dueInRange = dueDate &&
+        (!from || dueDate >= from) &&
+        (!to || dueDate <= to);
+
+      const createdInRange = createdDate &&
+        (!from || createdDate >= from) &&
+        (!to || createdDate <= to);
+
+      return dueInRange || createdInRange;
+    });
+
+    this.generateSummary();
+    this.currentPage = 1;
+    this.generateSummary();
+  }
+
+  public getStatusLabel(statusId: number): string {
+    switch (statusId) {
+      case 1: return 'New';
+      case 2: return 'In Progress';
+      case 3: return 'On Hold';
+      case 4: return 'Resolved';
+      default: return 'Unknown';
+    }
+  }
+
+  public getStatusClass(statusId: number): string {
+    switch (statusId) {
+      case 1: return 'bg-primary';
+      case 2: return 'bg-warning text-dark';
+      case 3: return 'bg-secondary';
+      case 4: return 'bg-success';
+      default: return 'bg-dark';
+    }
+  }
+
+  public getTypeLabel(typeId: number): string {
+    switch (typeId) {
+      case 1: return 'Wedding';
+      case 2: return 'Birthday';
+      case 3: return 'Party';
+      case 4: return 'Meeting';
+      default: return 'Unknown';
+    }
+  }
+
+  showFullTable(): boolean {
+    return this.filteredList.length > 0 || (!this.filter.from && !this.filter.to);
+  }
+
+  displayedList(): Enquiry[] {
+    const list = this.filteredList.length > 0 ? this.filteredList : this.enquiryList;
+
+    if (!this.sortColumn) return list;
+
+    return [...list].sort((a, b) => {
+      const valA = (a as any)[this.sortColumn];
+      const valB = (b as any)[this.sortColumn];
+
+      if (valA == null || valB == null) return 0;
+
+      const aVal = typeof valA === 'string' ? valA.toLowerCase() : valA;
+      const bVal = typeof valB === 'string' ? valB.toLowerCase() : valB;
+
+      return this.sortDirection === 'asc'
+        ? aVal > bVal ? 1 : aVal < bVal ? -1 : 0
+        : aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+    });
+  }
+
+  setSort(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+  }
+
+  exportToExcel(): void {
+    const dataToExport = (this.filteredList.length > 0 ? this.filteredList : this.enquiryList).map(e => ({
+      Folio: e.folio,
+      Name: e.customerName,
+      Email: e.email,
+      Phone: e.phone,
+      Type: this.getTypeLabel(e.enquiryTypeId),
+      Status: this.getStatusLabel(e.enquiryStatusId),
+      DueDate: e.dueDate ? new Date(e.dueDate).toLocaleDateString() : '',
+      CreatedDate: e.createdDate ? new Date(e.createdDate).toLocaleDateString() : '',
+      Costo: e.costo?.toFixed(2) ?? '',
+      Resolution: e.resolution
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = { Sheets: { 'Enquiries': worksheet }, SheetNames: ['Enquiries'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    FileSaver.saveAs(blob, 'enquiries_report.xlsx');
+  }
+
+  exportToCSV(): void {
+    const dataToExport = (this.filteredList.length > 0 ? this.filteredList : this.enquiryList).map(e => ({
+      Folio: e.folio,
+      Name: e.customerName,
+      Email: e.email,
+      Phone: e.phone,
+      Type: this.getTypeLabel(e.enquiryTypeId),
+      Status: this.getStatusLabel(e.enquiryStatusId),
+      DueDate: e.dueDate ? new Date(e.dueDate).toLocaleDateString() : '',
+      CreatedDate: e.createdDate ? new Date(e.createdDate).toLocaleDateString() : '',
+      Costo: e.costo?.toFixed(2) ?? '',
+      Resolution: e.resolution
+    }));
+
+    const headers = Object.keys(dataToExport[0]);
+    const rows = dataToExport.map(row =>
+      headers.map(header => `"${(row as any)[header]}"`).join(',')
+    );
+
+    const csvContent = [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    FileSaver.saveAs(blob, 'enquiries_report.csv');
+  }
+
+  pagedList(): Enquiry[] {
+    const list = this.filteredList.length > 0 ? this.filteredList : this.enquiryList;
+
+    let sortedList = [...list];
+    if (this.sortColumn) {
+      sortedList.sort((a, b) => {
+        const valA = (a as any)[this.sortColumn];
+        const valB = (b as any)[this.sortColumn];
+
+        const aVal = typeof valA === 'string' ? valA.toLowerCase() : valA;
+        const bVal = typeof valB === 'string' ? valB.toLowerCase() : valB;
+
+        return this.sortDirection === 'asc'
+          ? aVal > bVal ? 1 : aVal < bVal ? -1 : 0
+          : aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+      });
+    }
+
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return sortedList.slice(start, start + this.itemsPerPage);
+  }
+
+  totalPages(): number {
+    const totalItems = this.filteredList.length > 0 ? this.filteredList.length : this.enquiryList.length;
+    return Math.ceil(totalItems / this.itemsPerPage);
+  }
+
+}

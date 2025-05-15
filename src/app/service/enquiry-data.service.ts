@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Enquiry } from '../models/enquiry.model';
 import { environment } from '../../environment/environment';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -11,31 +12,35 @@ export class EnquiryDataService {
 
   constructor(private http: HttpClient) { }
   getEnquiryList() {
-    return this.http.get<Enquiry[]>(`${environment.apiUrl}/EnquiryData/GetAllEnquiries`);
+    return this.http.get<Enquiry[]>(`${environment.apiUrl}/api/EnquiryData/GetAllEnquiries`);
   }
 
   getEnquiryById(enquiryId: number) {
-    return this.http.get<Enquiry>(`${environment.apiUrl}/EnquiryData/GetEnquiryById/${enquiryId}`);
+    return this.http.get<Enquiry>(`${environment.apiUrl}/api/EnquiryData/GetEnquiryById/${enquiryId}`);
   }
 
   getAllTypes() {
-    return this.http.get(`${environment.apiUrl}/EnquiryData/GetAllTypes`);
+    return this.http.get(`${environment.apiUrl}/api/EnquiryData/GetAllTypes`);
   }
 
   getAllStatus() {
-    return this.http.get(`${environment.apiUrl}/EnquiryData/GetAllStatus`);
+    return this.http.get(`${environment.apiUrl}/api/EnquiryData/GetAllStatus`);
   }
 
   updateEnquiry(enquiry: Partial<Enquiry>) {
-    return this.http.put(`${environment.apiUrl}/EnquiryData/UpdateEnquiry`, enquiry);
+    return this.http.put(`${environment.apiUrl}/api/EnquiryData/UpdateEnquiry`, enquiry);
   }
 
   deleteEnquiry(enquiryId: number) {
-    return this.http.delete(`${environment.apiUrl}/EnquiryData/DeleteEnquiry/${enquiryId}`);
+    return this.http.delete(`${environment.apiUrl}/api/EnquiryData/DeleteEnquiry/${enquiryId}`);
   }
 
   // This method is used to create a new enquiry
   createEnquiry(enquiry: Enquiry) {
-    return this.http.post<Enquiry>(`${environment.apiUrl}/EnquiryData/CreateNewEnquiry`, enquiry);
+    return this.http.post<Enquiry>(`${environment.apiUrl}/api/EnquiryData/CreateNewEnquiry`, enquiry);
+  }
+
+  sendTicketByEmail(enquiryId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/EnquiryData/SendTicketEmail/${enquiryId}`, {});
   }
 }
