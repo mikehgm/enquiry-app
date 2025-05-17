@@ -1,0 +1,27 @@
+<div class="card shadow-sm mb-4" *ngIf="loyalClients.length > 0">
+  <div class="card-body">
+    <h5 class="card-title text-center mb-4">💎 Loyal Clients (5+ Enquiries)</h5>
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th class="text-center">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let client of loyalClients">
+            <td>{{ client.name }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.phone }}</td>
+            <td class="text-center">
+              <span class="badge bg-primary">{{ client.count }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

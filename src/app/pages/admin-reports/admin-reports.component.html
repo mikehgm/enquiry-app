@@ -4,20 +4,53 @@
   <div class="card mb-4">
     <div class="card-body">
       <form class="row g-3 align-items-end" (ngSubmit)="applyDateFilter()">
-        <div class="col-md-5">
-          <label for="fromDate" class="form-label">From</label>
-          <input type="date" id="fromDate" class="form-control" [(ngModel)]="filter.from" name="from">
+        <!-- Selector de periodo -->
+        <div class="col-md-4">
+          <label for="periodSelect" class="form-label">Periodo</label>
+          <select
+            id="periodSelect"
+            class="form-select"
+            [(ngModel)]="selectedPeriod"
+            name="selectedPeriod"
+            (change)="onPeriodChange(selectedPeriod)">
+            <option *ngFor="let option of periodOptions" [value]="option">
+              {{ option | titlecase }}
+            </option>
+          </select>
         </div>
-        <div class="col-md-5">
-          <label for="toDate" class="form-label">To</label>
-          <input type="date" id="toDate" class="form-control" [(ngModel)]="filter.to" name="to">
+
+        <!-- Fecha desde (solo si 'range') -->
+        <div class="col-md-3" *ngIf="selectedPeriod === 'range'">
+          <label for="fromDate" class="form-label">Desde</label>
+          <input
+            type="date"
+            id="fromDate"
+            class="form-control"
+            [(ngModel)]="customRange.from"
+            name="customFrom"
+            (change)="onCustomRangeChange()" />
         </div>
+
+        <!-- Fecha hasta (solo si 'range') -->
+        <div class="col-md-3" *ngIf="selectedPeriod === 'range'">
+          <label for="toDate" class="form-label">Hasta</label>
+          <input
+            type="date"
+            id="toDate"
+            class="form-control"
+            [(ngModel)]="customRange.to"
+            name="customTo"
+            (change)="onCustomRangeChange()" />
+        </div>
+
+        <!-- Botón de aplicar filtro -->
         <div class="col-md-2 d-grid">
           <button type="submit" class="btn btn-primary">
-            <i class="fas fa-filter me-1"></i> Filter
+            <i class="fas fa-filter me-1"></i> Filtrar
           </button>
         </div>
       </form>
+
     </div>
   </div>
 
@@ -31,14 +64,46 @@
   </div>
 
   <div class="row">
+    <div class="col-12">
+      <app-top-type-card
+        [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"
+        [dateRange]="filter"
+        [selectedPeriod]="selectedPeriod">
+      </app-top-type-card>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <app-loyal-clients-card
+        [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"
+        [dateRange]="filter"
+        [selectedPeriod]="selectedPeriod">
+      </app-loyal-clients-card>
+    </div>
+  </div>
+
+  <div class="row">
     <div class="col-md-4">
-      <app-status-chart [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"></app-status-chart>
+      <app-status-chart
+        [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"
+        [dateRange]="filter">
+      </app-status-chart>
     </div>
     <div class="col-md-4">
-      <app-monthly-trend-chart [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"></app-monthly-trend-chart>
+      <app-trend-chart
+        [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"
+        [dateRange]="filter"
+        [selectedPeriod]="selectedPeriod">
+      </app-trend-chart>
+
     </div>
     <div class="col-md-4">
-      <app-revenue-chart [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"></app-revenue-chart>
+      <app-revenue-chart
+        [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"
+        [dateRange]="filter"
+        [selectedPeriod]="selectedPeriod">
+      </app-revenue-chart>
     </div>
   </div>
 

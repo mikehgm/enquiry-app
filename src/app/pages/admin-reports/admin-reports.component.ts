@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Enquiry } from '../../models/enquiry.model';
 import { EnquiryDataService } from '../../service/enquiry-data.service';
 import { CommonModule } from '@angular/common';
@@ -6,16 +6,27 @@ import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { StatusChartComponent } from './status-chart/status-chart.component';
-import { MonthlyTrendChartComponent } from "./monthly-trend-chart/monthly-trend-chart.component";
+import { TrendChartComponent } from "./trend-chart/trend-chart.component";
 import { RevenueChartComponent } from "./revenue-chart/revenue-chart.component";
+import { TopTypeCardComponent } from './top-type-card/top-type-card.component';
+import { LoyalClientsCardComponent } from './loyal-clients-card/loyal-clients-card.component';
+export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
   selector: 'app-admin-reports',
-  imports: [CommonModule, FormsModule, StatusChartComponent, MonthlyTrendChartComponent, RevenueChartComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    StatusChartComponent,
+    TrendChartComponent,
+    RevenueChartComponent,
+    TopTypeCardComponent,
+    LoyalClientsCardComponent
+  ],
   templateUrl: './admin-reports.component.html',
   styleUrl: './admin-reports.component.css'
 })
-export class AdminReportsComponent {
+export class AdminReportsComponent implements OnInit {
 
   enquiryList: Enquiry[] = [];
   summaryByStatus: { label: string; count: number; class: string }[] = [];
@@ -23,6 +34,12 @@ export class AdminReportsComponent {
     from: '',
     to: ''
   };
+
+  selectedPeriod: PeriodType = 'week';
+  periodOptions: PeriodType[] = ['day', 'week', 'month', 'bimester', 'quarter', 'semester', 'year', 'range'];
+
+  customRange: { from: Date; to: Date } = { from: new Date(), to: new Date() };
+
   filteredList: Enquiry[] = [];
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -32,12 +49,61 @@ export class AdminReportsComponent {
   constructor(private enquiryService: EnquiryDataService) {}
 
   ngOnInit(): void {
-    this.enquiryService.getEnquiryList().subscribe({
+    this.enquiryService.getAllEnquiries().subscribe({
       next: (list) => {
         this.enquiryList = list;
+        this.updateDateRange();
         this.generateSummary();
       }
     });
+  }
+
+  onPeriodChange(period: PeriodType): void {
+    this.selectedPeriod = period;
+    this.updateDateRange();
+  }
+
+  onCustomRangeChange(): void {
+    if (this.selectedPeriod === 'range') {
+      const fromDate = new Date(this.customRange.from);
+      const toDate = new Date(this.customRange.to);
+
+      if (!isNaN(fromDate.getTime()) && !isNaN(toDate.getTime())) {
+        this.filter.from = fromDate.toISOString().substring(0, 10);
+        this.filter.to = toDate.toISOString().substring(0, 10);
+        this.applyDateFilter();
+      }
+    }
+  }
+
+
+  private updateDateRange(): void {
+    if (this.selectedPeriod === 'range') {
+      this.onCustomRangeChange();
+    } else {
+      const { from, to } = this.calculateDateRange(this.selectedPeriod);
+      this.filter.from = from.toISOString().substring(0, 10);
+      this.filter.to = to.toISOString().substring(0, 10);
+      this.applyDateFilter();
+    }
+  }
+
+  private calculateDateRange(period: PeriodType): { from: Date; to: Date } {
+    const today = new Date();
+    const end = new Date(today);
+    const start = new Date(today);
+
+    switch (period) {
+      case 'day': break;
+      case 'week': start.setDate(today.getDate() - 6); break;
+      case 'month': start.setMonth(today.getMonth() - 1); break;
+      case 'bimester': start.setMonth(today.getMonth() - 2); break;
+      case 'quarter': start.setMonth(today.getMonth() - 3); break;
+      case 'semester': start.setMonth(today.getMonth() - 6); break;
+      case 'year': start.setFullYear(today.getFullYear() - 1); break;
+    }
+
+    return { from: start, to: end };
   }
 
   generateSummary(): void {

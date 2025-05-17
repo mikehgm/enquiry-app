@@ -11,7 +11,10 @@ import { Observable } from 'rxjs';
 export class EnquiryDataService {
 
   constructor(private http: HttpClient) { }
-  getEnquiryList() {
+  getEnquiries() {
+    return this.http.get<Enquiry[]>(`${environment.apiUrl}/api/EnquiryData/GetEnquiries`);
+  }
+  getAllEnquiries() {
     return this.http.get<Enquiry[]>(`${environment.apiUrl}/api/EnquiryData/GetAllEnquiries`);
   }
 
@@ -42,5 +45,9 @@ export class EnquiryDataService {
 
   sendTicketByEmail(enquiryId: number): Observable<any> {
     return this.http.post(`${environment.apiUrl}/api/EnquiryData/SendTicketEmail/${enquiryId}`, {});
+  }
+
+  archiveEnquiry(enquiryId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/EnquiryData/ArchiveEnquiry/${enquiryId}`, {});
   }
 }

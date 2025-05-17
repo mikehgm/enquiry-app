@@ -21,9 +21,8 @@ export class LoginComponent {
   login(): void {
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (res) => {
-        const token = res.token;
         const mustChangePassword = res.mustChangePassword;
-        this.authService.saveToken(res.token);
+        this.authService.setTokens(res.access_token, res.refresh_token);
 
         if (!mustChangePassword) {
           this.router.navigate(['/change-password']);

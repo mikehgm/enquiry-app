@@ -1,23 +1,6 @@
-.btn-clear {
-  width: 85px;
-}
 
-.btn-search {
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-}
 
 @media (max-width: 991.98px) {
-  .btn-search {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .btn-clear {
-    width: auto;
-    font-size: 0.9rem;
-  }
-
   .navbar .form-control {
     max-width: 120px;
     font-size: 0.9rem;
@@ -76,18 +59,6 @@
 
   .navbar-expand-custom .navbar-nav {
     flex-direction: column;
-  }
-
-  .navbar-expand-custom form {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .navbar-expand-custom .btn-search,
-  .navbar-expand-custom .btn-clear {
-    width: 100%;
   }
 }
 

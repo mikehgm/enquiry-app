@@ -1,7 +1,7 @@
 <nav class="navbar navbar-dark bg-dark navbar-expand-custom">
   <div class="container-fluid">
     <a class="navbar-brand" href="javascript:void(0)">Enquiry App</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar" *ngIf="authService.isLoggedIn()">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="mynavbar" *ngIf="authService.isLoggedIn()">
@@ -23,25 +23,6 @@
           </a>
         </li>
       </ul>
-      <form class="d-flex justify-content-end gap-2">
-        <input class="form-control me-2"
-          [(ngModel)]="searchTerm"
-          [ngModelOptions]="{ standalone: true }"
-          (keyup.enter)="onSearchChange()"
-          type="text" placeholder="Search">
-        <button
-          (click)="onSearchChange()"
-          class="btn btn-primary me-2 btn-search"
-          type="button"><i class="fas fa-search me-1"></i></button>
-        <button
-          *ngIf="searchTerm"
-          (click)="clearSearch()"
-          class="btn btn-sm btn-danger me-2 btn-clear"
-          aria-label="Clear search" type="button">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </form>
-
       <button class="btn btn-dark me-2" (click)="logout()">
         <i class="fas fa-sign-out-alt me-1"></i></button>
     </div>

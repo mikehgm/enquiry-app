@@ -8,10 +8,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { EnquiryStatsComponent } from "./enquiry-stats/enquiry-stats.component";
 import { AlertService } from '../../service/alert.service';
 import { SignalRService } from '../../service/signlr.service';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-enquiry-list',
-  imports: [CommonModule, RouterLink, EnquiryStatsComponent],
+  imports: [CommonModule, FormsModule, RouterLink, EnquiryStatsComponent],
   templateUrl: './enquiry-list.component.html',
   styleUrl: './enquiry-list.component.css'
 })
@@ -24,12 +26,14 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
   public currentPage: number = 1;
   public itemsPerPage: number = 12;
   public orderAsc = true;
+  public searchTerm: string = '';
 
   constructor(
     private enquiryDataService: EnquiryDataService,
     private searchDataService: SearchDataService,
     private alert: AlertService,
-    private signalRService: SignalRService) {}
+    private signalRService: SignalRService,
+    private authService: AuthService) {}
 
   ngOnInit(): void {
     this.getEnquiryList();
@@ -134,19 +138,30 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
   }
 
   public getEnquiryList(): void {
-    this.enquiryDataService.getEnquiryList()
+    this.enquiryDataService.getEnquiries()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.enquiryList = response
+          this.enquiryList = response;
+
+          // ⚡ Asegura que el filtro de estado se mantenga activo después del refresh
+          if (this.selectedStatusFilter !== null) {
+            this.filterEnquiries('', this.selectedStatusFilter);
+          } else if (this.searchTerm.trim() !== '') {
+            this.filterEnquiries(this.searchTerm.trim());
+          } else {
+            this.filteredEnquiries = [];
+          }
+
           this.sortEnquiriesByDate();
         },
         error: (err) => {
-          console.error(err)
-           this.alert.error('Error', 'No se pudo obtener el listado de enquiries.');
+          console.error(err);
+          this.alert.error('Error', 'No se pudo obtener el listado de enquiries.');
         }
       });
   }
+
 
   public deleteEnquiry(enquiryId: number): void {
     // Confirm deletion
@@ -215,6 +230,15 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     this.sortEnquiriesByDate();
   }
 
+  onSearchChange(): void {
+    this.searchDataService.setSearchTerm(this.searchTerm.trim().toLowerCase());
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.searchDataService.setSearchTerm(this.searchTerm);
+  }
+
   sortEnquiriesByDate(): void {
     const list = this.hasSearchTerm ? this.filteredEnquiries : this.enquiryList;
 
@@ -225,5 +249,31 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     });
   }
 
+  archiveEnquiry(id: number): void {
+
+    this.alert.confirm({
+      title: '¿Estás seguro de archivar este enquiry?',
+      text: 'Se pasara al listado de enquiries archivados.',
+      confirmColor: '#dc3545'
+    }).then(result => {
+      if (result.isConfirmed) {
+
+        this.enquiryDataService.archiveEnquiry(id).subscribe({
+          next: () => {
+            this.alert.success('Archivado correctamente', 'El enquiry fue archivado.');
+            //this.getEnquiryList();
+          },
+          error: () => {
+            this.alert.error('Error', 'No se pudo archivar el enquiry.');
+          }
+        });
+
+      }
+    });
+  }
+
+  isAdmin(): boolean {
+    return this.authService.getRole() === 'Admin';
+  }
 
 }

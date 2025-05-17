@@ -1,60 +1,59 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
-import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
-type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
+import { NgChartsModule } from 'ng2-charts';
 
 @Component({
-  selector: 'app-revenue-chart',
+  selector: 'app-trend-chart',
   standalone: true,
   imports: [CommonModule, NgChartsModule],
-  templateUrl: './revenue-chart.component.html'
+  templateUrl: './trend-chart.component.html'
 })
-export class RevenueChartComponent implements OnChanges {
+
+export class TrendChartComponent implements OnChanges {
   @Input() enquiries: Enquiry[] = [];
   @Input() dateRange!: { from: string; to: string };
-  @Input() selectedPeriod!: PeriodType;
+  @Input() selectedPeriod!: 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
-  public barChartOptions: ChartOptions<'bar'> = {
+
+  public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
-      title: { display: true, text: 'Revenue Over Time' },
+      title: { display: true, text: 'Enquiries Created per Month' },
       legend: { display: false }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: { callback: value => `$${value}` }
-      }
     },
     maintainAspectRatio: false
   };
 
-  public barChartLabels: string[] = [];
-  public barChartData: ChartConfiguration<'bar'>['data']['datasets'] = [];
+  public lineChartLabels: string[] = [];
+  public lineChartData: ChartConfiguration<'line'>['data']['datasets'] = [];
 
   ngOnChanges(): void {
     if (!this.enquiries || !this.dateRange || !this.selectedPeriod) return;
 
     const from = new Date(this.dateRange.from);
     const to = new Date(this.dateRange.to);
-
     const filtered = this.enquiries.filter(e => {
-      const created = e.createdDate ? new Date(e.createdDate) : null;
-      return created && created >= from && created <= to;
+      if (!e.createdDate) return;
+
+      const d = new Date(e.createdDate);
+      return d >= from && d <= to;
     });
 
     const labels = this.generateDateLabels(from, to);
-    const revenueTotals = this.sumRevenueByLabel(filtered, labels);
+    const counts = this.countEnquiriesByLabel(filtered, labels);
 
-    this.barChartLabels = labels;
-    this.barChartData = [{
-      data: revenueTotals,
-      label: 'Revenue',
-      backgroundColor: ['#132A13', '#31572C', '#4F772D', '#90A955']
+    this.lineChartLabels = labels;
+    this.lineChartData = [{
+      data: counts,
+      label: 'Enquiries',
+      borderColor: '#0d6efd',
+      fill: true,
+      tension: 0.4
     }];
   }
+
 
   private generateDateLabels(from: Date, to: Date): string[] {
     const labels: string[] = [];
@@ -66,7 +65,7 @@ export class RevenueChartComponent implements OnChanges {
         case 'day':
         case 'week':
         case 'range':
-          label = current.toISOString().substring(0, 10);
+          label = current.toISOString().substring(0, 10); // yyyy-mm-dd
           current.setDate(current.getDate() + 1);
           break;
         case 'month':
@@ -96,12 +95,13 @@ export class RevenueChartComponent implements OnChanges {
     return labels;
   }
 
-  private sumRevenueByLabel(data: Enquiry[], labels: string[]): number[] {
-    const sums = new Map<string, number>();
-    for (const label of labels) sums.set(label, 0);
+  private countEnquiriesByLabel(data: Enquiry[], labels: string[]): number[] {
+    const counts = new Map<string, number>();
+    for (const label of labels) counts.set(label, 0);
 
     data.forEach(e => {
-      if (!e.createdDate || e.costo == null) return;
+
+      if (!e.createdDate) return; // <- prevención de error
       const d = new Date(e.createdDate);
 
       let label = '';
@@ -128,10 +128,11 @@ export class RevenueChartComponent implements OnChanges {
           break;
       }
 
-      if (sums.has(label)) sums.set(label, sums.get(label)! + e.costo);
+      if (counts.has(label)) counts.set(label, counts.get(label)! + 1);
     });
 
-    return labels.map(l => +(sums.get(l)?.toFixed(2) || 0));
+    return labels.map(l => counts.get(l) ?? 0);
   }
-}
 
+
+}
