@@ -3,13 +3,14 @@ import { Enquiry } from '../../models/enquiry.model';
 import { EnquiryDataService } from '../../service/enquiry-data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
 import { StatusChartComponent } from './status-chart/status-chart.component';
 import { TrendChartComponent } from "./trend-chart/trend-chart.component";
 import { RevenueChartComponent } from "./revenue-chart/revenue-chart.component";
 import { TopTypeCardComponent } from './top-type-card/top-type-card.component';
 import { LoyalClientsCardComponent } from './loyal-clients-card/loyal-clients-card.component';
+import { LoyalClientsTableComponent } from './loyal-clients-table/loyal-clients-table.component';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
@@ -21,7 +22,7 @@ export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'se
     TrendChartComponent,
     RevenueChartComponent,
     TopTypeCardComponent,
-    LoyalClientsCardComponent
+    LoyalClientsTableComponent
   ],
   templateUrl: './admin-reports.component.html',
   styleUrl: './admin-reports.component.css'

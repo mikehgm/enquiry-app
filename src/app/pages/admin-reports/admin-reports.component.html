@@ -75,11 +75,7 @@
 
   <div class="row">
     <div class="col-12">
-      <app-loyal-clients-card
-        [enquiries]="filteredList.length > 0 ? filteredList : enquiryList"
-        [dateRange]="filter"
-        [selectedPeriod]="selectedPeriod">
-      </app-loyal-clients-card>
+      <app-loyal-clients-table [min]="5" [period]="30"></app-loyal-clients-table>
     </div>
   </div>
 

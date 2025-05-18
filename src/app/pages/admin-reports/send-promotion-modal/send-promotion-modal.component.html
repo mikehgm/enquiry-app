@@ -1,0 +1,49 @@
+<div class="modal fade show d-block backdrop-blur" *ngIf="show" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg animate__animated animate__fadeIn">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="fas fa-bullhorn me-2"></i> Enviar Promoción a <strong>{{ clientName }}</strong>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="close()"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <!-- Método de envío -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">Método de envío</label>
+          <select [(ngModel)]="selectedMethod" class="form-select">
+            <option value="email">📧 Correo electrónico</option>
+            <option value="whatsapp">💬 WhatsApp</option>
+          </select>
+        </div>
+
+        <!-- Imagen -->
+        <div class="mb-4" *ngIf="selectedMethod === 'email'">
+          <label class="form-label fw-bold">Imagen promocional (opcional no mayor a 10mb)</label>
+          <input type="file" (change)="onFileChange($event)" class="form-control mb-2">
+          <div *ngIf="imageFile" class="border rounded p-2 mt-2 text-center">
+            <img [src]="imagePreview" class="img-fluid rounded shadow-sm" style="max-height: 200px;" />
+          </div>
+        </div>
+
+        <!-- Mensaje -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Mensaje personalizado</label>
+          <textarea [(ngModel)]="message" class="form-control" rows="5" placeholder="Escribe tu mensaje..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer bg-light px-4 py-3">
+        <button class="btn btn-secondary" (click)="close()">
+          <i class="fas fa-times me-1"></i> Cancelar
+        </button>
+        <button class="btn btn-success" (click)="submit()" [disabled]="!message.trim()">
+          <i class="fas fa-paper-plane me-1"></i> Enviar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
