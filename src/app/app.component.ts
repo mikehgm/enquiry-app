@@ -3,10 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./shared/header/header.component";
 import { SearchDataService } from './service/search-data.service';
 import { SignalRService } from './service/signlr.service';
+import { LoadingOverlayComponent } from "./shared/loading-overlay/loading-overlay.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet, HeaderComponent, LoadingOverlayComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,0 +1,44 @@
+<div class="container mt-5">
+  <h2 class="mb-4"><i class="fas fa-archive me-2 text-warning"></i>Enquiries Archivados</h2>
+  <div class="card shadow rounded-4">
+    <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+      <span class="badge bg-secondary">{{ archivedEnquiries.length }} resultados</span>
+    </div>
+
+    <div class="card-body">
+      <div *ngIf="archivedEnquiries.length > 0; else emptyMessage" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Folio</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let enquiry of archivedEnquiries">
+              <td><strong>{{ enquiry.folio }}</strong></td>
+              <td>{{ enquiry.customerName }}</td>
+              <td>{{ enquiry.createdDate | date:'shortDate' }}</td>
+              <td>{{ getTypeLabel(enquiry.enquiryTypeId) }}</td>
+              <td>
+                <a class="btn btn-sm btn-outline-primary" [routerLink]="['/enquiry/ticket', enquiry.enquiryId]">
+                  <i class="fas fa-eye me-1"></i> Ver Ticket
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #emptyMessage>
+        <div class="text-center text-muted py-4">
+          <i class="fas fa-folder-open fa-2x mb-3"></i>
+          <p class="mb-0">No hay enquiries archivados por el momento.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

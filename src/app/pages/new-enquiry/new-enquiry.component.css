@@ -22,3 +22,10 @@
 .money-symbol {
   top: 38px;
 }
+
+
+@media (max-width: 576px) {
+  .btn-status {
+    height: 60px;
+  }
+}

@@ -4,21 +4,25 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar" *ngIf="authService.isLoggedIn()">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="mynavbar" *ngIf="authService.isLoggedIn()">
+    <div class="collapse navbar-collapse" id="mynavbar" #navbarCollapse *ngIf="authService.isLoggedIn()">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/">Enquiries</a>
+          <a class="nav-link" routerLink="/" (click)="collapseNavbar()">Enquiries</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="enquiry/new">New Enquiry</a>
+          <a class="nav-link" routerLink="enquiry/new" (click)="collapseNavbar()">New Enquiry</a>
         </li>
-        <li class="nav-item" *ngIf="isAdmin" >
-          <a class="nav-link" routerLink="/admin/reports">
+        <li class="nav-item dropdown" *ngIf="isAdmin">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Reports
           </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" routerLink="/admin/reports" (click)="collapseNavbar()">General Report </a></li>
+            <li><a class="dropdown-item" routerLink="/admin/reports/archived" routerLinkActive="active" (click)="collapseNavbar()">Archived Enquiries</a></li>
+          </ul>
         </li>
         <li class="nav-item" *ngIf="isAdmin">
-          <a class="nav-link" routerLink="/admin-users">
+          <a class="nav-link" routerLink="/admin-users" (click)="collapseNavbar()">
             Admin Users
           </a>
         </li>

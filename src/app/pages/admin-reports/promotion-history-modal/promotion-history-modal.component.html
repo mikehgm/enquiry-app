@@ -1,0 +1,40 @@
+<div class="modal fade show d-block backdrop-blur send-promotion-modal" *ngIf="show" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg animate__animated animate__fadeIn">
+
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title"><i class="fas fa-clock me-2"></i> Historial de promociones - {{ clientName }}</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="close.emit()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div *ngIf="history.length === 0" class="text-center text-muted p-4">
+          No hay promociones enviadas aún.
+        </div>
+
+        <div class="bg-light border-start border-4 border-primary p-3 mb-4 rounded shadow-sm small text-secondary">
+          <i class="fas fa-clock me-2 text-primary"></i>
+          Por políticas del sistema, las promociones solo pueden enviarse una vez cada <strong>24 horas</strong> por cliente y canal.
+        </div>
+
+        <div *ngIf="history.length > 0">
+          <div *ngFor="let item of history" class="border-bottom py-3">
+            <div class="d-flex justify-content-between">
+              <span class="badge bg-info">{{ item.method }}</span>
+              <small class="text-muted">{{ item.createdAt | date:'short' }}</small>
+            </div>
+            <p class="mb-1 mt-2">{{ item.message }}</p>
+            <img *ngIf="item.imageUrl" [src]="getFullImageUrl(item.imageUrl)" class="img-thumbnail mt-2"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer bg-light">
+        <button class="btn btn-secondary" (click)="close.emit()">
+          <i class="fas fa-times me-1"></i> Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -12,7 +12,9 @@ export class SignalRService {
 
   public startConnection(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${environment.apiUrl}/hubs/enquiry`)
+      .withUrl(`${environment.apiUrl}/hubs/enquiry`, {
+        withCredentials: true
+      })
       .withAutomaticReconnect()
       .build();
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { parseLocalDate } from '../../../utils/date-utils';
 type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
@@ -37,11 +38,11 @@ export class RevenueChartComponent implements OnChanges {
   ngOnChanges(): void {
     if (!this.enquiries || !this.dateRange || !this.selectedPeriod) return;
 
-    const from = new Date(this.dateRange.from);
-    const to = new Date(this.dateRange.to);
+    const from = parseLocalDate(this.dateRange.from);
+    const to = parseLocalDate(this.dateRange.to);
 
-    const filtered = this.enquiries.filter(e => {
-      const created = e.createdDate ? new Date(e.createdDate) : null;
+    const filtered = this.enquiries.filter(enquiry => {
+      const created = enquiry.createdDate ? parseLocalDate(enquiry.createdDate) : null;
       return created && created >= from && created <= to;
     });
 
@@ -100,9 +101,9 @@ export class RevenueChartComponent implements OnChanges {
     const sums = new Map<string, number>();
     for (const label of labels) sums.set(label, 0);
 
-    data.forEach(e => {
-      if (!e.createdDate || e.costo == null) return;
-      const d = new Date(e.createdDate);
+    data.forEach(enquiry => {
+      if (!enquiry.createdDate || enquiry.costo == null) return;
+      const d = parseLocalDate(enquiry.createdDate);
 
       let label = '';
       switch (this.selectedPeriod) {
@@ -128,7 +129,7 @@ export class RevenueChartComponent implements OnChanges {
           break;
       }
 
-      if (sums.has(label)) sums.set(label, sums.get(label)! + e.costo);
+      if (sums.has(label)) sums.set(label, sums.get(label)! + enquiry.costo);
     });
 
     return labels.map(l => +(sums.get(l)?.toFixed(2) || 0));

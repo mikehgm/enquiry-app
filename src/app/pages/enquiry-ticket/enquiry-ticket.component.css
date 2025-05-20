@@ -34,3 +34,21 @@ hr {
   font-weight: bold;
   font-size: 20px;
 }
+
+/* Ocultar los botones flotantes en móviles */
+@media (max-width: 750px) {
+  .ticket-aside {
+    display: none;
+  }
+
+  .ticket-buttons-mobile {
+    display: flex;
+  }
+}
+
+/* Ocultar los botones móviles en pantallas grandes */
+@media (min-width: 751px) {
+  .ticket-buttons-mobile {
+    display: none!important;
+  }
+}

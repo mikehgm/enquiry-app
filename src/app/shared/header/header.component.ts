@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../service/alert.service';
+declare var bootstrap: any; // Solo si no tienes @types/bootstrap
 
 @Component({
   selector: 'app-header',
@@ -14,8 +15,9 @@ import { AlertService } from '../../service/alert.service';
 })
 export class HeaderComponent implements OnInit {
   searchTerm: string = '';
-
+  @ViewChild('navbarCollapse') navbarCollapse!: ElementRef;
   @Output() searchChanged = new EventEmitter<string>();
+
 
   constructor(public authService: AuthService, private alert: AlertService, private router: Router) {}
 
@@ -50,6 +52,14 @@ export class HeaderComponent implements OnInit {
 
   get isAdmin(): boolean {
     return this.authService.getRole() === 'Admin';
+  }
+
+  collapseNavbar(): void {
+    const collapseEl = this.navbarCollapse.nativeElement;
+    if (collapseEl.classList.contains('show')) {
+      const bsCollapse = bootstrap.Collapse.getInstance(collapseEl);
+      bsCollapse?.hide();
+    }
   }
 
 }

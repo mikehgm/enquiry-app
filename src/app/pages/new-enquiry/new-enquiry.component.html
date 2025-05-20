@@ -114,7 +114,7 @@
 
                 <div class="form-floating mb-4">
                   <textarea class="form-control" name="resolution" [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px" placeholder=" " ></textarea>
-                  <label for="resolution" class="required-field">resolution</label>
+                  <label for="resolution">resolution</label>
                 </div>
 
                 <div class="row">
@@ -128,8 +128,8 @@
                         [(ngModel)]="newEnquiry.costo"
                         class="form-control ps-5"
                         id="costo"
-                        placeholder="Costo">
-                      <label for="costo">Costo</label>
+                        placeholder="Costo" required>
+                      <label for="costo" class="required-field">Costo</label>
                       <span class="position-absolute money-symbol translate-middle-y ms-3 text-muted">$</span>
                     </div>
                   </div>
@@ -141,8 +141,8 @@
                         [(ngModel)]="newEnquiry.dueDate"
                         class="form-control"
                         id="fechaEntrega"
-                        placeholder="Fecha de entrega">
-                      <label for="fechaEntrega">Fecha de Entrega</label>
+                        placeholder="Fecha de entrega" required="">
+                      <label for="fechaEntrega" class="required-field">Fecha de Entrega</label>
                     </div>
                   </div>
                 </div>

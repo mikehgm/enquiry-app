@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
+import { parseLocalDate } from '../../../utils/date-utils';
 
 @Component({
   selector: 'app-trend-chart',
@@ -32,12 +33,12 @@ export class TrendChartComponent implements OnChanges {
   ngOnChanges(): void {
     if (!this.enquiries || !this.dateRange || !this.selectedPeriod) return;
 
-    const from = new Date(this.dateRange.from);
-    const to = new Date(this.dateRange.to);
-    const filtered = this.enquiries.filter(e => {
-      if (!e.createdDate) return;
+    const from = parseLocalDate(this.dateRange.from);
+    const to = parseLocalDate(this.dateRange.to);
+    const filtered = this.enquiries.filter(enquiry => {
+      if (!enquiry.createdDate) return;
 
-      const d = new Date(e.createdDate);
+      const d = parseLocalDate(enquiry.createdDate);
       return d >= from && d <= to;
     });
 
@@ -99,10 +100,10 @@ export class TrendChartComponent implements OnChanges {
     const counts = new Map<string, number>();
     for (const label of labels) counts.set(label, 0);
 
-    data.forEach(e => {
+    data.forEach(enquiry => {
 
-      if (!e.createdDate) return; // <- prevención de error
-      const d = new Date(e.createdDate);
+      if (!enquiry.createdDate) return; // <- prevención de error
+      const d = parseLocalDate(enquiry.createdDate);
 
       let label = '';
       switch (this.selectedPeriod) {

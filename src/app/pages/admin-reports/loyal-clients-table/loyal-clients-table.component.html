@@ -6,7 +6,7 @@
       <i class="fas fa-spinner fa-spin me-1"></i> Loading...
     </div>
 
-    <div *ngIf="!loading && clients.length > 0" class="table-responsive">
+    <div *ngIf="!loading && loyalClients.length > 0" class="table-responsive">
       <table class="table table-striped align-middle">
         <thead>
           <tr>
@@ -15,18 +15,27 @@
             <th>Phone</th>
             <th class="text-center">Total</th>
             <th class="text-end">Last Interaction</th>
-            <th class="text-end">Promoción</th>
+            <th class="text-center">Promocion enviada</th>
+            <th class="text-end"></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let c of clients">
-            <td>{{ c.name }}</td>
-            <td>{{ c.email }}</td>
-            <td>{{ c.phone }}</td>
-            <td class="text-center"><span class="badge bg-primary">{{ c.totalEnquiries }}</span></td>
-            <td class="text-end">{{ c.lastInteraction | date:'shortDate' }}</td>
+          <tr *ngFor="let loyalClient of loyalClients">
+            <td>{{ loyalClient.name }}</td>
+            <td>{{ loyalClient.email }}</td>
+            <td>{{ loyalClient.phone }}</td>
+            <td class="text-center"><span class="badge bg-primary">{{ loyalClient.totalEnquiries }}</span></td>
+            <td class="text-end">{{ loyalClient.lastInteraction | date:'shortDate' }}</td>
+            <td class="text-center">
+              <button
+                *ngIf="loyalClient.hasPromotionSent"
+                class="btn btn-outline-success btn-sm"
+                (click)="openHistoryModal(loyalClient)">
+                <i class="fas fa-check-circle"></i>
+              </button>
+            </td>
             <td class="text-end">
-              <button class="btn btn-outline-primary btn-sm" (click)="openPromotionModal(c)">
+              <button class="btn btn-outline-primary btn-sm" (click)="openPromotionModal(loyalClient)">
                 <i class="fas fa-gift me-1"></i> Enviar
               </button>
             </td>
@@ -35,15 +44,23 @@
       </table>
     </div>
 
-    <div *ngIf="!loading && clients.length === 0" class="text-center text-muted">
+    <div *ngIf="!loading && loyalClients.length === 0" class="text-center text-muted">
       No loyal clients found in this period.
     </div>
   </div>
 </div>
 
 <app-send-promotion-modal
+  [clientId]="selectedClient?.clientId ?? 0"
   [clientName]="selectedClient?.name || ''"
   [email]="selectedClient?.email || ''"
   [phone]="selectedClient?.phone || ''"
   (send)="onPromotionSend($event)">
 </app-send-promotion-modal>
+
+<app-promotion-history-modal
+  [show]="historyModalVisible"
+  [clientName]="selectedClient?.name || ''"
+  [history]="promotionHistory"
+  (close)="historyModalVisible = false">
+</app-promotion-history-modal>

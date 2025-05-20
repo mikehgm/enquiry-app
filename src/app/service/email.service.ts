@@ -10,20 +10,32 @@ export class EmailService {
   constructor(private http: HttpClient) {}
 
   sendPromotion(
-    toEmail: string,
+    clientId: number,
     message: string,
+    method: 'email' | 'whatsapp',
+    toEmail?: string,
+    toPhone?: string,
     imageFile?: File,
     subject: string = 'Promoción exclusiva para ti'
   ): Observable<any> {
     const formData = new FormData();
-    formData.append('ToEmail', toEmail);
+    formData.append('ClientId', clientId.toString());
     formData.append('Message', message);
-    formData.append('Subject', subject);
+    formData.append('Method', method);
 
-    if (imageFile) {
-      formData.append('Image', imageFile, imageFile.name);
+    if (method === 'email') {
+      formData.append('ToEmail', toEmail || '');
+      formData.append('Subject', subject);
+      if (imageFile) {
+        formData.append('Image', imageFile, imageFile.name);
+      }
+    }
+
+    if (method === 'whatsapp') {
+      formData.append('ToPhone', toPhone || '');
     }
 
     return this.http.post(`${this.apiUrl}/send-promotion`, formData);
   }
+
 }

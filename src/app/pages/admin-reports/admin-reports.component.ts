@@ -9,6 +9,7 @@ import { RevenueChartComponent } from "./revenue-chart/revenue-chart.component";
 import { TopTypeCardComponent } from './top-type-card/top-type-card.component';
 import { LoyalClientsCardComponent } from './loyal-clients-card/loyal-clients-card.component';
 import { LoyalClientsTableComponent } from './loyal-clients-table/loyal-clients-table.component';
+import { parseLocalDate } from '../../utils/date-utils';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
@@ -30,7 +31,7 @@ export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'se
 export class AdminReportsComponent implements OnInit {
 
   enquiryList: Enquiry[] = [];
-  summaryByStatus: { label: string; count: number; class: string }[] = [];
+  summaryByStatus: { label: string; count: number; class: string, statusId: number }[] = [];
   filter = {
     from: '',
     to: ''
@@ -119,7 +120,7 @@ export class AdminReportsComponent implements OnInit {
 
     this.summaryByStatus = Array.from(statusMap.entries()).map(([statusId, meta]) => {
       const count = baseList.filter(e => e.enquiryStatusId === statusId).length;
-      return { ...meta, count };
+      return { ...meta, count, statusId };
     });
   }
 
@@ -130,12 +131,12 @@ export class AdminReportsComponent implements OnInit {
       return;
     }
 
-    const from = this.filter.from ? new Date(this.filter.from + 'T00:00:00') : null;
-    const to = this.filter.to ? new Date(this.filter.to + 'T23:59:59') : null;
+    const from = this.filter.from ? parseLocalDate(this.filter.from) : null;
+    const to = this.filter.to ? parseLocalDate(this.filter.to) : null;
 
     this.filteredList = this.enquiryList.filter(enquiry => {
-      const dueDate = enquiry.dueDate ? new Date(enquiry.dueDate) : null;
-      const createdDate = enquiry.createdDate ? new Date(enquiry.createdDate) : null;
+      const dueDate = enquiry.dueDate ? parseLocalDate(enquiry.dueDate) : null;
+      const createdDate = enquiry.createdDate ? parseLocalDate(enquiry.createdDate) : null;
 
       const dueInRange = dueDate &&
         (!from || dueDate >= from) &&
@@ -150,7 +151,6 @@ export class AdminReportsComponent implements OnInit {
 
     this.generateSummary();
     this.currentPage = 1;
-    this.generateSummary();
   }
 
   public getStatusLabel(statusId: number): string {
@@ -180,6 +180,16 @@ export class AdminReportsComponent implements OnInit {
       case 3: return 'Party';
       case 4: return 'Meeting';
       default: return 'Unknown';
+    }
+  }
+
+  getStatusIcon(status: number): string {
+    switch (status) {
+      case 1: return 'fas fa-plus-circle';
+      case 2: return 'fas fa-spinner';
+      case 3: return 'fas fa-pause-circle';
+      case 4: return 'fas fa-check-circle';
+      default: return '';
     }
   }
 
@@ -217,17 +227,17 @@ export class AdminReportsComponent implements OnInit {
   }
 
   exportToExcel(): void {
-    const dataToExport = (this.filteredList.length > 0 ? this.filteredList : this.enquiryList).map(e => ({
-      Folio: e.folio,
-      Name: e.customerName,
-      Email: e.email,
-      Phone: e.phone,
-      Type: this.getTypeLabel(e.enquiryTypeId),
-      Status: this.getStatusLabel(e.enquiryStatusId),
-      DueDate: e.dueDate ? new Date(e.dueDate).toLocaleDateString() : '',
-      CreatedDate: e.createdDate ? new Date(e.createdDate).toLocaleDateString() : '',
-      Costo: e.costo?.toFixed(2) ?? '',
-      Resolution: e.resolution
+    const dataToExport = (this.filteredList.length > 0 ? this.filteredList : this.enquiryList).map(enquiry => ({
+      Folio: enquiry.folio,
+      Name: enquiry.customerName,
+      Email: enquiry.email,
+      Phone: enquiry.phone,
+      Type: this.getTypeLabel(enquiry.enquiryTypeId),
+      Status: this.getStatusLabel(enquiry.enquiryStatusId),
+      DueDate: enquiry.dueDate ? parseLocalDate(enquiry.dueDate).toLocaleDateString() : '',
+      CreatedDate: enquiry.createdDate ? parseLocalDate(enquiry.createdDate).toLocaleDateString() : '',
+      Costo: enquiry.costo?.toFixed(2) ?? '',
+      Resolution: enquiry.resolution
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
@@ -239,17 +249,17 @@ export class AdminReportsComponent implements OnInit {
   }
 
   exportToCSV(): void {
-    const dataToExport = (this.filteredList.length > 0 ? this.filteredList : this.enquiryList).map(e => ({
-      Folio: e.folio,
-      Name: e.customerName,
-      Email: e.email,
-      Phone: e.phone,
-      Type: this.getTypeLabel(e.enquiryTypeId),
-      Status: this.getStatusLabel(e.enquiryStatusId),
-      DueDate: e.dueDate ? new Date(e.dueDate).toLocaleDateString() : '',
-      CreatedDate: e.createdDate ? new Date(e.createdDate).toLocaleDateString() : '',
-      Costo: e.costo?.toFixed(2) ?? '',
-      Resolution: e.resolution
+    const dataToExport = (this.filteredList.length > 0 ? this.filteredList : this.enquiryList).map(enquiry => ({
+      Folio: enquiry.folio,
+      Name: enquiry.customerName,
+      Email: enquiry.email,
+      Phone: enquiry.phone,
+      Type: this.getTypeLabel(enquiry.enquiryTypeId),
+      Status: this.getStatusLabel(enquiry.enquiryStatusId),
+      DueDate: enquiry.dueDate ? parseLocalDate(enquiry.dueDate).toLocaleDateString() : '',
+      CreatedDate: enquiry.createdDate ? parseLocalDate(enquiry.createdDate).toLocaleDateString() : '',
+      Costo: enquiry.costo?.toFixed(2) ?? '',
+      Resolution: enquiry.resolution
     }));
 
     const headers = Object.keys(dataToExport[0]);

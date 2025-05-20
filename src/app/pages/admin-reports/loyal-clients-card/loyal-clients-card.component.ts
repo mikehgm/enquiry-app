@@ -2,6 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { PeriodType } from '../admin-reports.component';
+import { parseLocalDate } from '../../../utils/date-utils';
 
 @Component({
   selector: 'app-loyal-clients-card',
@@ -21,11 +22,11 @@ export class LoyalClientsCardComponent {
   ngOnChanges(): void {
     if (!this.enquiries || !this.dateRange) return;
 
-    const from = new Date(this.dateRange.from);
-    const to = new Date(this.dateRange.to);
+    const from = parseLocalDate(this.dateRange.from);
+    const to = parseLocalDate(this.dateRange.to);
 
-    const filtered = this.enquiries.filter(e => {
-      const created = e.createdDate ? new Date(e.createdDate) : null;
+    const filtered = this.enquiries.filter(enquiry => {
+      const created = enquiry.createdDate ? parseLocalDate(enquiry.createdDate) : null;
       return created && created >= from && created <= to;
     });
 

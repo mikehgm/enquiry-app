@@ -3,26 +3,34 @@ import { CommonModule } from '@angular/common';
 import { LoyalClientService } from '../../../service/loyal-client.service';
 import { LoyalClient } from '../../../models/loyalClient.model';
 import { SendPromotionModalComponent } from '../send-promotion-modal/send-promotion-modal.component';
+import { PromotionHistoryModalComponent } from "../promotion-history-modal/promotion-history-modal.component";
+import { AlertService } from '../../../service/alert.service';
 
 @Component({
   selector: 'app-loyal-clients-table',
   standalone: true,
-  imports: [CommonModule, SendPromotionModalComponent],
+  imports: [CommonModule, SendPromotionModalComponent, PromotionHistoryModalComponent],
   templateUrl: './loyal-clients-table.component.html'
 })
 export class LoyalClientsTableComponent implements OnChanges {
   @Input() min: number = 5;
   @Input() period: number = 30;
 
-  clients: LoyalClient[] = [];
+  loyalClients: LoyalClient[] = [];
   loading = true;
   @ViewChild(SendPromotionModalComponent)
   sendPromoModal!: SendPromotionModalComponent;
 
-  selectedClient: { name: string; email: string; phone: string } | null = null;
+  selectedClient: {
+    clientId: number;
+    name: string;
+    email: string;
+    phone: string } | null = null;
 
+  historyModalVisible = false;
+  promotionHistory: any[] = [];
 
-  constructor(private loyalClientService: LoyalClientService) {}
+  constructor(private alert: AlertService, private loyalClientService: LoyalClientService) {}
 
   ngOnChanges(): void {
     this.fetchClients();
@@ -32,18 +40,19 @@ export class LoyalClientsTableComponent implements OnChanges {
     this.loading = true;
     this.loyalClientService.getLoyalClients(this.min, this.period).subscribe({
       next: (res) => {
-        this.clients = res;
+        this.loyalClients = res;
         this.loading = false;
       },
       error: () => {
-        this.clients = [];
+        this.loyalClients = [];
         this.loading = false;
       }
     });
   }
 
-  openPromotionModal(client: { name: string; email: string; phone: string }): void {
-    this.selectedClient = client;
+  openPromotionModal(loyalClient: LoyalClient): void {
+    this.selectedClient = loyalClient;
+    this.sendPromoModal.clientId = this.selectedClient.clientId;
     setTimeout(() => this.sendPromoModal.open(), 0);
   }
 
@@ -69,5 +78,21 @@ export class LoyalClientsTableComponent implements OnChanges {
       alert('📧 Email con imagen y mensaje será enviado (pendiente integración)');
     }
   }
+
+  openHistoryModal(client: LoyalClient): void {
+    this.selectedClient = client;
+    this.historyModalVisible = true;
+
+    this.loyalClientService.getPromotionHistory(client.clientId).subscribe({
+      next: (res) => {
+        this.promotionHistory = res;
+      },
+      error: () => {
+        this.alert.error('Error', 'No se pudo obtener el historial de promociones.');
+        this.promotionHistory = [];
+      }
+    });
+  }
+
 
 }

@@ -1,0 +1,9 @@
+.icon-bg {
+  position: absolute;
+  font-size: 90px;
+  opacity: 0.2;
+  right: 10px;
+  bottom: 5px;
+  z-index: 1;
+  pointer-events: none;
+}

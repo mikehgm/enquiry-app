@@ -55,10 +55,11 @@
   </div>
 
   <div class="row">
-    <div class="col-md-3" *ngFor="let s of summaryByStatus">
-      <div class="p-3 text-white rounded text-center mb-3" [ngClass]="s.class">
-        <h5>{{ s.label }}</h5>
-        <p class="fs-3 mb-0">{{ s.count }}</p>
+    <div class="col-md-3" *ngFor="let stat of summaryByStatus">
+      <div class="p-3 text-white rounded text-center mb-3 position-relative" [ngClass]="stat.class">
+        <i [ngClass]="getStatusIcon(stat.statusId)" class="icon-bg"></i>
+        <h5>{{ stat.label }}</h5>
+        <p class="fs-3 mb-0">{{ stat.count }}</p>
       </div>
     </div>
   </div>

@@ -1,8 +1,23 @@
 <div class="container mt-5" *ngIf="enquiry">
+
+  <!-- Contenedor visible SOLO en móviles -->
+    <div class="ticket-buttons-mobile d-flex justify-content-between mb-3" *ngIf="enquiry">
+      <button class="btn btn-primary me-1 flex-fill me-2 btn-ticket" (click)="sendByEmail()">
+        <i class="fas fa-envelope me-1"></i> Email
+      </button>
+      <button class="btn btn-success me-1 flex-fill me-2 btn-ticket" (click)="sendByWhatsApp()">
+        <i class="fab fa-whatsapp me-1"></i> WhatsApp
+      </button>
+      <button class="btn btn-secondary flex-fill btn-ticket">
+        <i class="fa-solid fa-print"></i> Imprimir
+      </button>
+    </div>
+
   <div id="ticket-content" class="card shadow border-1 mx-auto ticket-container">
     <div class="card-header bg-dark text-white text-center">
       <h4 class="mb-0">🧾 ENQUIRY TICKET</h4>
     </div>
+
     <div class="card-body">
       <p>Compnay Name</p>
       <p>Calle primera, el centro #1234, CP 12345, Ciudad, Estado</p>

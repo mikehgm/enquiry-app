@@ -50,4 +50,8 @@ export class EnquiryDataService {
   archiveEnquiry(enquiryId: number): Observable<any> {
     return this.http.post(`${environment.apiUrl}/api/EnquiryData/ArchiveEnquiry/${enquiryId}`, {});
   }
+
+  getArchivedEnquiries(): Observable<Enquiry[]> {
+    return this.http.get<Enquiry[]>(`${environment.apiUrl}/api/EnquiryData/GetArchivedEnquiries`);
+  }
 }

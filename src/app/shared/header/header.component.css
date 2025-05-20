@@ -1,4 +1,6 @@
-
+::ng-deep .navbar-nav .dropdown-menu {
+  position: absolute;
+}
 
 @media (max-width: 991.98px) {
   .navbar .form-control {

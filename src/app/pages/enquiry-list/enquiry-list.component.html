@@ -73,7 +73,7 @@
           <div class="d-flex justify-content-between align-items-center mb-2">
             <!-- Botón Archivar -->
             <button
-              *ngIf="enquiry.enquiryStatusId === 4 && isAdmin"
+              *ngIf="isArchivable(enquiry.enquiryStatusId)"
               (click)="archiveEnquiry(enquiry.enquiryId ?? 0)"
               class="btn btn-sm btn-outline-warning"
               title="Archivar enquiry">

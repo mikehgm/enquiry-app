@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { parseLocalDate } from '../../../utils/date-utils';
 type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
@@ -36,11 +37,11 @@ export class StatusChartComponent implements OnChanges {
   ngOnChanges(): void {
     if (!this.enquiries || !this.dateRange) return;
 
-    const from = this.dateRange.from ? new Date(this.dateRange.from) : '';
-    const to = this.dateRange.to ? new Date(this.dateRange.to) : '';
+    const from = parseLocalDate(this.dateRange.from);
+    const to = parseLocalDate(this.dateRange.to);
 
     const filtered = this.enquiries.filter(enquiry => {
-      const created = enquiry.createdDate ? new Date(enquiry.createdDate) : '';
+      const created = enquiry.createdDate ? parseLocalDate(enquiry.createdDate) : '';
       return created >= from && created <= to;
     });
 

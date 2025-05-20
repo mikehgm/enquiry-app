@@ -9,9 +9,12 @@ import { EmailService } from '../../../service/email.service';
   selector: 'app-send-promotion-modal',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './send-promotion-modal.component.html'
+  templateUrl: './send-promotion-modal.component.html',
+  styleUrl: './send-promotion-modal.component.css'
+
 })
 export class SendPromotionModalComponent {
+  @Input() clientId!: number;
   @Input() clientName: string = '';
   @Input() email: string = '';
   @Input() phone: string = '';
@@ -39,43 +42,80 @@ export class SendPromotionModalComponent {
     this.message = '';
     this.selectedMethod = 'email';
     this.imageFile = null;
+    this.imagePreview = null;
   }
 
   close(): void {
+    this.message = '';
+    this.imageFile = null;
+    this.imagePreview = null;
+    this.selectedMethod = 'email';
     this.show = false;
+    this.send.emit();
   }
 
   submit(): void {
-    if (this.selectedMethod === 'email') {
+    const method = this.selectedMethod;
+    const trimmedMessage = this.message.trim();
+
+    if (method === 'email') {
       this.emailService.sendPromotion(
+        this.clientId,
+        trimmedMessage,
+        method,
         this.email,
-        this.message.trim(),
+        undefined,
         this.imageFile || undefined
       ).subscribe({
         next: () => {
           this.alert.success('Correo enviado', 'La promoción fue enviada exitosamente.');
           this.close();
         },
-        error: () => {
-          this.alert.error('Error al enviar', 'No se pudo enviar el correo. Intenta de nuevo.');
+        error: (error) => {
+          if (error.status === 409) {
+            this.alert.error('Promoción ya enviada', 'Ya se envió una promoción a este cliente recientemente.');
+          } else {
+            this.alert.error('Error al enviar', 'No se pudo enviar la promoción. Intenta de nuevo.');
+          }
         }
       });
+
     } else {
-        const phone = this.phone.replace(/\D/g, '');
+      const phone = this.phone.replace(/\D/g, '');
+      if (!phone || phone.length < 10) {
+        this.alert.error('Número inválido', 'El teléfono del cliente no es válido para WhatsApp.');
+        return;
+      }
 
-        if (!phone || phone.length < 10) {
-          this.alert.error('Número inválido', 'El teléfono del cliente no es válido para WhatsApp.');
-          return;
+      const fullPhone = `52${phone}`;
+
+      this.emailService.sendPromotion(
+        this.clientId,
+        trimmedMessage,
+        method,
+        undefined,
+        fullPhone
+      ).subscribe({
+        next: () => {
+          this.alert.success('WhatsApp registrado', 'La promoción fue registrada exitosamente.');
+          this.close();
+        },
+        error: (error) => {
+          if (error.status === 409) {
+            this.alert.error('Promoción ya enviada', 'Ya se envió una promoción a este cliente recientemente.');
+          } else {
+            this.alert.error('Error al enviar', 'No se pudo enviar la promoción. Intenta de nuevo.');
+          }
         }
+      });
 
-        const fullPhone = `52${phone}`;
-        const encodedMsg = encodeURIComponent(this.message.trim());
-        const url = `https://wa.me/${fullPhone}?text=${encodedMsg}`;
-        window.open(url, '_blank');
-        this.alert.success('Redirigiendo a WhatsApp', 'El mensaje está listo para enviarse.');
-        this.close();
+      // También lo redirigimos a WhatsApp Web para enviarlo manualmente
+      const encodedMsg = encodeURIComponent(trimmedMessage);
+      const whatsappUrl = `https://wa.me/${fullPhone}?text=${encodedMsg}`;
+      window.open(whatsappUrl, '_blank');
     }
   }
+
 
   onFileChange(event: any): void {
     const file = event.target.files[0];

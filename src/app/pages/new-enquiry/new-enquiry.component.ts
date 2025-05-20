@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { Enquiry } from '../../models/enquiry.model';
 import { AlertService } from '../../service/alert.service';
+import { parseLocalDate } from '../../utils/date-utils';
 
 @Component({
   selector: 'app-new-enquiry',
@@ -53,7 +54,7 @@ export class NewEnquiryComponent implements OnInit {
         next: (data: Enquiry) =>  {
           console.log('Enquiry data:', data);
           if (data.dueDate) {
-            const fecha = new Date(data.dueDate);
+            const fecha = parseLocalDate(data.dueDate);
             const year = fecha.getFullYear();
             const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
             const day = fecha.getDate().toString().padStart(2, '0');

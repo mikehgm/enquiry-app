@@ -10,6 +10,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { AdminReportsComponent } from './pages/admin-reports/admin-reports.component';
 import { EnquiryTicketComponent } from './pages/enquiry-ticket/enquiry-ticket.component';
+import { ArchivedEnquiriesComponent } from './pages/admin-reports/archived-enquiries/archived-enquiries.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -46,6 +47,11 @@ export const routes: Routes = [
     path: 'admin/reports',
     component: AdminReportsComponent,
     canActivate: [AuthGuard, AdminGuard]
+  },
+  {
+    path: 'admin/reports/archived',
+    component: ArchivedEnquiriesComponent,
+    canActivate: [AuthGuard, AdminGuard],
   },
   {
     path: 'confirm-account',

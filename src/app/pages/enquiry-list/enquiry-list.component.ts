@@ -10,6 +10,7 @@ import { AlertService } from '../../service/alert.service';
 import { SignalRService } from '../../service/signlr.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
+import { parseLocalDate } from '../../utils/date-utils';
 
 @Component({
   selector: 'app-enquiry-list',
@@ -243,8 +244,8 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     const list = this.hasSearchTerm ? this.filteredEnquiries : this.enquiryList;
 
     list.sort((a, b) => {
-      const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
-      const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+      const dateA = a.createdDate ? parseLocalDate(a.createdDate).getTime() : 0;
+      const dateB = b.createdDate ? parseLocalDate(b.createdDate).getTime() : 0;
       return this.orderAsc ? dateA - dateB : dateB - dateA;
     });
   }
@@ -274,6 +275,16 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
 
   isAdmin(): boolean {
     return this.authService.getRole() === 'Admin';
+  }
+
+  isArchivable(statusId: number): boolean {
+    let validate = false;
+
+    if (statusId === 4 && this.authService.getRole() === 'Admin') {
+      validate = true;
+    }
+
+    return validate;
   }
 
 }

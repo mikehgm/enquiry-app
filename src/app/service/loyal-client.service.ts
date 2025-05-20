@@ -14,4 +14,9 @@ export class LoyalClientService {
   getLoyalClients(min: number = 5, period: number = 30): Observable<LoyalClient[]> {
     return this.http.get<LoyalClient[]>(`${this.apiUrl}?min=${min}&period=${period}`);
   }
+
+  getPromotionHistory(clientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/getPromotionHistory/${clientId}`);
+  }
+
 }
