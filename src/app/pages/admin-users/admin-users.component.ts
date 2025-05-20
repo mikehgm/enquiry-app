@@ -5,10 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../service/user.service';
 import { AlertService } from '../../service/alert.service';
 import { User } from '../../models/user.model';
+import { BackButtonComponent } from "../../shared/back-button/back-button.component";
 
 @Component({
   selector: 'app-admin-users',
-  imports: [RouterLink, CommonModule, FormsModule],
+  imports: [RouterLink, CommonModule, FormsModule, BackButtonComponent],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.css'
 })

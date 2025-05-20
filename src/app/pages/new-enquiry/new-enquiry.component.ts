@@ -8,10 +8,11 @@ import { AsyncPipe } from '@angular/common';
 import { Enquiry } from '../../models/enquiry.model';
 import { AlertService } from '../../service/alert.service';
 import { parseLocalDate } from '../../utils/date-utils';
+import { BackButtonComponent } from '../../shared/back-button/back-button.component';
 
 @Component({
   selector: 'app-new-enquiry',
-  imports: [FormsModule, CommonModule, AsyncPipe, RouterLink],
+  imports: [FormsModule, CommonModule, AsyncPipe, RouterLink, BackButtonComponent],
   templateUrl: './new-enquiry.component.html',
   styleUrl: './new-enquiry.component.css'
 })

@@ -1,5 +1,5 @@
 <div class="container mt-5" *ngIf="enquiry">
-
+  <app-back-button></app-back-button>
   <!-- Contenedor visible SOLO en móviles -->
     <div class="ticket-buttons-mobile d-flex justify-content-between mb-3" *ngIf="enquiry">
       <button class="btn btn-primary me-1 flex-fill me-2 btn-ticket" (click)="sendByEmail()">

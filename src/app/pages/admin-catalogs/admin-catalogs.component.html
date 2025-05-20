@@ -1,0 +1,14 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Catálogos de la Aplicación</h2>
+
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./status']" routerLinkActive="active">Estados</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['./types']" routerLinkActive="active">Tipos</a>
+    </li>
+  </ul>
+
+  <router-outlet></router-outlet>
+</div>

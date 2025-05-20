@@ -11,6 +11,9 @@ import { AdminGuard } from './guards/admin.guard';
 import { AdminReportsComponent } from './pages/admin-reports/admin-reports.component';
 import { EnquiryTicketComponent } from './pages/enquiry-ticket/enquiry-ticket.component';
 import { ArchivedEnquiriesComponent } from './pages/admin-reports/archived-enquiries/archived-enquiries.component';
+import { AdminCatalogsComponent } from './pages/admin-catalogs/admin-catalogs.component';
+import { StatusListComponent } from './pages/admin-catalogs/status-list/status-list.component';
+import { TypeListComponent } from './pages/admin-catalogs/type-list/type-list.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -52,6 +55,16 @@ export const routes: Routes = [
     path: 'admin/reports/archived',
     component: ArchivedEnquiriesComponent,
     canActivate: [AuthGuard, AdminGuard],
+  },
+  {
+    path: 'admin/catalogos',
+    component: AdminCatalogsComponent,
+    canActivate: [AdminGuard],
+    children: [
+      { path: 'status', component: StatusListComponent },
+      { path: 'types', component: TypeListComponent },
+      { path: '', redirectTo: 'status', pathMatch: 'full' }
+    ]
   },
   {
     path: 'confirm-account',

@@ -12,6 +12,7 @@ import { LoyalClientsTableComponent } from './loyal-clients-table/loyal-clients-
 import { parseLocalDate } from '../../utils/date-utils';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { BackButtonComponent } from "../../shared/back-button/back-button.component";
 export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
@@ -23,8 +24,9 @@ export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'se
     TrendChartComponent,
     RevenueChartComponent,
     TopTypeCardComponent,
-    LoyalClientsTableComponent
-  ],
+    LoyalClientsTableComponent,
+    BackButtonComponent
+],
   templateUrl: './admin-reports.component.html',
   styleUrl: './admin-reports.component.css'
 })

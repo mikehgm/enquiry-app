@@ -6,11 +6,12 @@ import html2canvas from 'html2canvas';
 import { EnquiryDataService } from '../../service/enquiry-data.service';
 import { Enquiry } from '../../models/enquiry.model';
 import { AlertService } from '../../service/alert.service';
+import { BackButtonComponent } from '../../shared/back-button/back-button.component';
 
 @Component({
   selector: 'app-enquiry-ticket',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BackButtonComponent],
   templateUrl: './enquiry-ticket.component.html',
   styleUrl: './enquiry-ticket.component.css'
 })
