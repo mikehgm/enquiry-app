@@ -6,11 +6,12 @@ import { AlertService } from '../../../service/alert.service';
 import { User } from '../../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, LabelPipe],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.css'
 })

@@ -10,11 +10,15 @@ import { AlertService } from '../../service/alert.service';
 import { SignalRService } from '../../service/signlr.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
+import { CatalogDataService } from '../../service/catalog-data.service';
 import { parseLocalDate } from '../../utils/date-utils';
+import { TypeNamePipe } from '../../pipes/type-name.pipe';
+import { StatusNamePipe } from '../../pipes/status-name.pipe';
+import { LabelPipe } from '../../pipes/label.pipe';
 
 @Component({
   selector: 'app-enquiry-list',
-  imports: [CommonModule, FormsModule, RouterLink, EnquiryStatsComponent],
+  imports: [CommonModule, FormsModule, RouterLink, EnquiryStatsComponent, StatusNamePipe, TypeNamePipe, LabelPipe],
   templateUrl: './enquiry-list.component.html',
   styleUrl: './enquiry-list.component.css'
 })
@@ -34,9 +38,12 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
     private searchDataService: SearchDataService,
     private alert: AlertService,
     private signalRService: SignalRService,
-    private authService: AuthService) {}
+    private authService: AuthService,
+    private catalogService: CatalogDataService) {}
 
   ngOnInit(): void {
+    this.catalogService.getStatuses().subscribe();
+    this.catalogService.getTypes().subscribe();
     this.getEnquiryList();
 
     this.searchDataService.searchTerm$
@@ -98,24 +105,12 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
       : this.enquiryList;
   }
 
-  public getStatusLabel(statusId: number): string {
-    switch (statusId) {
-      case 1: return 'New';
-      case 2: return 'In Progress';
-      case 3: return 'On Hold';
-      case 4: return 'Resolved';
-      default: return 'Unknown';
-    }
+  getStatusLabel(id: number): string {
+    return this.catalogService.getStatusNameById(id);
   }
 
-  public getTypeLabel(typeId: number): string {
-    switch (typeId) {
-      case 1: return 'Wedding';
-      case 2: return 'Birthday';
-      case 3: return 'Party';
-      case 4: return 'Meeting';
-      default: return 'Unknown';
-    }
+  getTypeLabel(id: number): string {
+    return this.catalogService.getTypeNameById(id);
   }
 
   public getStatusClass(statusId: number): string {

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CatalogDataService } from '../../../service/catalog-data.service';
 import { FormsModule } from '@angular/forms';
 import { EnquiryStatus } from '../../../models/status.model';
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 @Component({
   standalone: true,
   selector: 'app-status-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LabelPipe],
   templateUrl: './status-list.component.html'
 })
 export class StatusListComponent implements OnInit {

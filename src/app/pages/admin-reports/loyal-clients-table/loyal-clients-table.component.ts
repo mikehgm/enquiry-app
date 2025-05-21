@@ -5,11 +5,12 @@ import { LoyalClient } from '../../../models/loyalClient.model';
 import { SendPromotionModalComponent } from '../send-promotion-modal/send-promotion-modal.component';
 import { PromotionHistoryModalComponent } from "../promotion-history-modal/promotion-history-modal.component";
 import { AlertService } from '../../../service/alert.service';
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 @Component({
   selector: 'app-loyal-clients-table',
   standalone: true,
-  imports: [CommonModule, SendPromotionModalComponent, PromotionHistoryModalComponent],
+  imports: [CommonModule, SendPromotionModalComponent, PromotionHistoryModalComponent, LabelPipe],
   templateUrl: './loyal-clients-table.component.html'
 })
 export class LoyalClientsTableComponent implements OnChanges {

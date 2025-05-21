@@ -1,13 +1,13 @@
 <div class="container mt-5">
   <app-back-button></app-back-button>
-  <h2 class="mb-4">📊 Enquiry Summary by Status</h2>
+  <h2 class="mb-4">📊 {{'ui_enquiry_summary_by_status' | label}}</h2>
 
   <div class="card mb-4">
     <div class="card-body">
       <form class="row g-3 align-items-end" (ngSubmit)="applyDateFilter()">
         <!-- Selector de periodo -->
         <div class="col-md-4">
-          <label for="periodSelect" class="form-label">Periodo</label>
+          <label for="periodSelect" class="form-label">{{'ui_periodo' | label}}</label>
           <select
             id="periodSelect"
             class="form-select"
@@ -22,7 +22,7 @@
 
         <!-- Fecha desde (solo si 'range') -->
         <div class="col-md-3" *ngIf="selectedPeriod === 'range'">
-          <label for="fromDate" class="form-label">Desde</label>
+          <label for="fromDate" class="form-label">{{'ui_desde' | label}}</label>
           <input
             type="date"
             id="fromDate"
@@ -34,7 +34,7 @@
 
         <!-- Fecha hasta (solo si 'range') -->
         <div class="col-md-3" *ngIf="selectedPeriod === 'range'">
-          <label for="toDate" class="form-label">Hasta</label>
+          <label for="toDate" class="form-label">{{'ui_hasta' | label}}</label>
           <input
             type="date"
             id="toDate"
@@ -47,7 +47,7 @@
         <!-- Botón de aplicar filtro -->
         <div class="col-md-2 d-grid">
           <button type="submit" class="btn btn-primary">
-            <i class="fas fa-filter me-1"></i> Filtrar
+            <i class="fas fa-filter me-1"></i> {{'ui_filtrar' | label}}
           </button>
         </div>
       </form>
@@ -108,7 +108,7 @@
   <div *ngIf="showFullTable" class="mt-5">
     <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
       <h4 class="mb-0">
-        📄 Enquiries {{ filteredList.length > 0 ? 'in Date Range' : 'List' }}
+        📄 {{'ui_enquiries' | label}} {{ filteredList.length > 0 ? 'in Date Range' : 'List' }}
         <span class="badge bg-dark ms-2">
           {{ (filteredList.length > 0 ? filteredList.length : enquiryList.length) }} total
         </span>
@@ -116,15 +116,15 @@
 
       <div class="d-flex gap-2 mt-2 mt-md-0">
         <button class="btn btn-success" (click)="exportToExcel()">
-          <i class="fas fa-file-excel me-1"></i> Export to Excel
+          <i class="fas fa-file-excel me-1"></i> {{'ui_export_to_excel' | label}}
         </button>
         <button class="btn btn-secondary" (click)="exportToCSV()">
-          <i class="fas fa-file-csv me-1"></i> Export to CSV
+          <i class="fas fa-file-csv me-1"></i> {{'ui_export_to_csv' | label}}
         </button>
       </div>
     </div>
     <div class="d-flex justify-content-end align-items-center gap-2 mb-2">
-      <label for="itemsPerPage" class="form-label mb-0">Show:</label>
+      <label for="itemsPerPage" class="form-label mb-0">{{'ui_show' | label}}:</label>
       <select id="itemsPerPage" class="form-select form-select-sm" style="width: auto;"
               [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
         <option [value]="10">10</option>
@@ -138,24 +138,24 @@
         <thead class="table-dark">
           <tr>
             <th (click)="setSort('folio')" style="cursor:pointer">
-              Folio <i *ngIf="sortColumn === 'folio'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+              {{'ui_folio' | label}} <i *ngIf="sortColumn === 'folio'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
             </th>
             <th (click)="setSort('customerName')" style="cursor:pointer">
-              Customer <i *ngIf="sortColumn === 'customerName'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+              {{'ui_cliente' | label}} <i *ngIf="sortColumn === 'customerName'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
             </th>
             <th (click)="setSort('email')" style="cursor:pointer">
-              Email <i *ngIf="sortColumn === 'email'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+              {{'ui_email' | label}} <i *ngIf="sortColumn === 'email'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
             </th>
             <th (click)="setSort('enquiryTypeId')" style="cursor:pointer">
-              Type <i *ngIf="sortColumn === 'enquiryTypeId'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+              {{'ui_tipo' | label}} <i *ngIf="sortColumn === 'enquiryTypeId'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
             </th>
-            <th>Status</th>
+            <th>{{'ui_status' | label}}</th>
 
             <th (click)="setSort('createdDate')" style="cursor:pointer">
               Created <i *ngIf="sortColumn === 'createdDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
             </th>
             <th (click)="setSort('dueDate')" style="cursor:pointer">
-              Due Date <i *ngIf="sortColumn === 'dueDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+              {{'ui_fecha_de_entrega' | label}} <i *ngIf="sortColumn === 'dueDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
             </th>
           </tr>
         </thead>
@@ -180,7 +180,7 @@
         <ul class="pagination justify-content-center">
           <li class="page-item" [class.disabled]="currentPage === 1">
             <button class="page-link" (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
-              Previous
+              <
             </button>
           </li>
 
@@ -191,7 +191,7 @@
 
           <li class="page-item" [class.disabled]="currentPage === totalPages()">
             <button class="page-link" (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages()">
-              Next
+              >
             </button>
           </li>
         </ul>

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CatalogDataService } from '../../../service/catalog-data.service';
 import { EnquiryType } from '../../../models/type.model';
 import { FormsModule } from '@angular/forms';
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 @Component({
   standalone: true,
   selector: 'app-type-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LabelPipe],
   templateUrl: './type-list.component.html'
 })
 export class TypeListComponent implements OnInit {

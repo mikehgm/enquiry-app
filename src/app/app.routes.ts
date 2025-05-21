@@ -14,6 +14,7 @@ import { ArchivedEnquiriesComponent } from './pages/admin-reports/archived-enqui
 import { AdminCatalogsComponent } from './pages/admin-catalogs/admin-catalogs.component';
 import { StatusListComponent } from './pages/admin-catalogs/status-list/status-list.component';
 import { TypeListComponent } from './pages/admin-catalogs/type-list/type-list.component';
+import { AppConfigComponent } from './pages/admin/app-config/app-config.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -65,6 +66,11 @@ export const routes: Routes = [
       { path: 'types', component: TypeListComponent },
       { path: '', redirectTo: 'status', pathMatch: 'full' }
     ]
+  },
+  {
+    path: 'admin/config-ui',
+    component: AppConfigComponent,
+    canActivate: [AdminGuard]
   },
   {
     path: 'confirm-account',

@@ -1,0 +1,52 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Configuraci&oacute;n</h2>
+
+  <input
+    class="form-control mb-3"
+    type="text"
+    placeholder="Buscar clave o valor..."
+    [(ngModel)]="searchTerm"
+    (input)="filter()"
+  />
+
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+      <tr>
+        <th style="width: 25%">Clave</th>
+        <th style="width: 35%">Texto por defecto</th>
+        <th style="width: 35%">Texto personalizado</th>
+        <th style="width: 5%">Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of filtered">
+        <td><code>{{ item.key }}</code></td>
+        <td>{{ item.label }}</td>
+        <td>
+          <input class="form-control" [(ngModel)]="item.label" />
+        </td>
+        <td>
+          <button class="btn btn-sm btn-success" (click)="save(item)">
+            <i class="fas fa-save"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TOAST de confirmación -->
+<div
+  class="toast align-items-center text-white bg-success border-0 position-fixed bottom-0 end-0 m-3"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  #toastRef
+>
+  <div class="d-flex">
+    <div class="toast-body">
+      ✔ Configuración guardada correctamente
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+  </div>
+</div>

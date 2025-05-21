@@ -15,7 +15,7 @@
       <div
         class="w-100 d-flex stat-box align-items-center justify-content-between flex-md-row flex-column text-center position-relative"
         style="z-index: 2;">
-        <h2 class="mb-0">{{ getStatusLabel(status) }}</h2>
+        <h2 class="mb-0">{{ status | statusName }}</h2>
         <p class="mb-0 fw-bold">{{ countByStatus(status) }}</p>
       </div>
     </div>

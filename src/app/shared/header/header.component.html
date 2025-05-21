@@ -7,29 +7,32 @@
     <div class="collapse navbar-collapse" id="mynavbar" #navbarCollapse *ngIf="authService.isLoggedIn()">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/" (click)="collapseNavbar()">Enquiries</a>
+          <a class="nav-link" routerLink="/" (click)="collapseNavbar()">{{ 'ui_enquiries' | label }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="enquiry/new" (click)="collapseNavbar()">New Enquiry</a>
+          <a class="nav-link" routerLink="enquiry/new" (click)="collapseNavbar()">{{ 'ui_new_enquiry' | label }}</a>
         </li>
         <li class="nav-item dropdown" *ngIf="isAdmin">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Reports
+            {{ 'ui_reports' | label }}
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item" routerLink="/admin/reports" (click)="collapseNavbar()">General Report </a></li>
-            <li><a class="dropdown-item" routerLink="/admin/reports/archived" routerLinkActive="active" (click)="collapseNavbar()">Archived Enquiries</a></li>
+            <li><a class="dropdown-item" routerLink="/admin/reports" (click)="collapseNavbar()"> {{ 'ui_general_report' | label }} </a></li>
+            <li><a class="dropdown-item" routerLink="/admin/reports/archived" routerLinkActive="active" (click)="collapseNavbar()">{{ 'ui_archived_enquiries' | label }}</a></li>
           </ul>
         </li>
         <li class="nav-item" *ngIf="isAdmin">
           <a class="nav-link" routerLink="/admin-users" (click)="collapseNavbar()">
-            Admin Users
+            {{ 'ui_admin_users' | label }}
           </a>
         </li>
         <li class="nav-item" *ngIf="isAdmin">
           <a class="nav-link" routerLink="/admin/catalogos" (click)="collapseNavbar()">
-            Catalogos
+            {{ 'ui_catalogos' | label }}
           </a>
+        </li>
+        <li class="nav-item" *ngIf="isAdmin">
+          <a class="nav-link" routerLink="/admin/config-ui">Config</a>
         </li>
       </ul>
       <button class="btn btn-dark me-2" (click)="logout()">

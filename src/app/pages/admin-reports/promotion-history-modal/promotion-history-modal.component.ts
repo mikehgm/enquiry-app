@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { environment } from '../../../../environment/environment';
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 @Component({
   selector: 'app-promotion-history-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LabelPipe],
   templateUrl: './promotion-history-modal.component.html',
   styleUrls: ['./promotion-history-modal.component.css']
 })

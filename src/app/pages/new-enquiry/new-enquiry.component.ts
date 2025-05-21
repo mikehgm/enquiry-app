@@ -9,10 +9,13 @@ import { Enquiry } from '../../models/enquiry.model';
 import { AlertService } from '../../service/alert.service';
 import { parseLocalDate } from '../../utils/date-utils';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+import { CatalogDataService } from '../../service/catalog-data.service';
+import { EnquiryStatusEnum } from '../../models/enquiry-status.enum';
+import { LabelPipe } from '../../pipes/label.pipe';
 
 @Component({
   selector: 'app-new-enquiry',
-  imports: [FormsModule, CommonModule, AsyncPipe, RouterLink, BackButtonComponent],
+  imports: [FormsModule, CommonModule, AsyncPipe, RouterLink, BackButtonComponent, LabelPipe],
   templateUrl: './new-enquiry.component.html',
   styleUrl: './new-enquiry.component.css'
 })
@@ -20,6 +23,7 @@ export class NewEnquiryComponent implements OnInit {
 
   private route = inject(ActivatedRoute);
   private enquiryDataService = inject(EnquiryDataService);
+  private catalogDataService = inject(CatalogDataService);
   public typeList: Observable<any> = new Observable<any>();
   public statusList: Observable<any> = new Observable<any>();
   public newEnquiry: Enquiry = {
@@ -38,44 +42,52 @@ export class NewEnquiryComponent implements OnInit {
     folio: '',
     costo: 0,
     dueDate: ''
-
   }
   public loading = false;
   public isEdit = false;
   public enquiryIdToEdit: number | null = null;
+  public enquiryStatus =  EnquiryStatusEnum;
 
   constructor(private alert: AlertService) { }
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.isEdit = true;
-      this.enquiryIdToEdit = Number(idParam);
-      this.enquiryDataService.getEnquiryById(this.enquiryIdToEdit).subscribe({
-        next: (data: Enquiry) =>  {
-          console.log('Enquiry data:', data);
-          if (data.dueDate) {
-            const fecha = parseLocalDate(data.dueDate);
-            const year = fecha.getFullYear();
-            const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
-            const day = fecha.getDate().toString().padStart(2, '0');
+    this.loadCatalogs();
+    this.checkEditMode();
+  }
 
-            data.dueDate = `${year}-${month}-${day}`; // yyyy-MM-dd (string)
-          }
-          this.newEnquiry = data
-        },
-        error: (err) => {
-          console.error('Error fetching enquiry:', err);
-          this.alert.error('Error al leer el registro', 'Hubo un error inesperado, favor de intentar de nuevo.');
-        }
-      });
-    } else {
+  private loadCatalogs(): void {
+    this.statusList = this.catalogDataService.getStatuses();
+    this.typeList = this.catalogDataService.getTypes();
+  }
+
+  private checkEditMode(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (!idParam) {
       this.newEnquiry.enquiryStatusId = 1;
+      return;
     }
 
-    this.typeList = this.enquiryDataService.getAllTypes();
-    this.statusList = this.enquiryDataService.getAllStatus();
+    this.isEdit = true;
+    this.enquiryIdToEdit = Number(idParam);
+    this.loadEnquiry(this.enquiryIdToEdit);
   }
+
+  private loadEnquiry(id: number): void {
+    this.enquiryDataService.getEnquiryById(id).subscribe({
+      next: (data: Enquiry) => {
+        if (data.dueDate) {
+          const fecha = parseLocalDate(data.dueDate);
+          data.dueDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
+        }
+        this.newEnquiry = data;
+      },
+      error: (err) => {
+        console.error(err);
+        this.showGenericError();
+      }
+    });
+  }
+
 
   public onSubmit() {
     this.loading = true;
@@ -90,8 +102,8 @@ export class NewEnquiryComponent implements OnInit {
           this.loading = false;
         },
         error: (err) => {
-          console.error('Error update enquiry:', err);
-          this.alert.error('Error al guardar los cambios', 'Hubo un error inesperado, favor de intentar de nuevo.');
+          console.error(err);
+          this.showGenericError();
           this.loading = false;
         }
       });
@@ -105,8 +117,8 @@ export class NewEnquiryComponent implements OnInit {
           this.loading = false;
         },
         error: (error) => {
-          this.alert.error('Error al crear el registro', 'Hubo un error inesperado, favor de intentar de nuevo.');
           console.error(error);
+          this.showGenericError();
           this.loading = false;
         }
       });
@@ -114,6 +126,11 @@ export class NewEnquiryComponent implements OnInit {
   }
 
   updateStatus(statusId: number): void {
+
+    if (this.newEnquiry.enquiryStatusId === statusId) {
+      this.alert.info('Sin cambios', 'El estado ya es el seleccionado.');
+      return;
+    }
 
     if (statusId === 4 && !this.newEnquiry.resolution) {
       this.alert.error('Falta información', 'Agrega una resolución antes de marcar como Resuelto.');
@@ -132,8 +149,9 @@ export class NewEnquiryComponent implements OnInit {
       next: () => {
         this.alert.success('Enquiry actualizado');
       },
-      error: () => {
-        this.alert.error('Error', 'No se pudo actualizar el estado del enquiry');
+      error: (error) => {
+        console.error(error);
+        this.showGenericError('No se pudo actualizar el estado del enquiry');
       }
     });
   }
@@ -144,6 +162,14 @@ export class NewEnquiryComponent implements OnInit {
       phone, email, message, resolution, costo, dueDate
     } = enquiry;
     return { enquiryId, enquiryTypeId, enquiryStatusId, customerName, phone, email, message, resolution, costo, dueDate };
+  }
+
+  getStatusLabel(id: number): string {
+    return this.catalogDataService.getStatusNameById(id);
+  }
+
+  private showGenericError(message: string = 'Hubo un error inesperado, favor de intentar de nuevo.') {
+    this.alert.error('Error', message);
   }
 
 }

@@ -1,17 +1,25 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
+import { CatalogDataService } from '../../../service/catalog-data.service';
+import { StatusNamePipe } from "../../../pipes/status-name.pipe";
 
 @Component({
   selector: 'app-enquiry-stats',
-  imports: [CommonModule],
+  imports: [CommonModule, StatusNamePipe],
   templateUrl: './enquiry-stats.component.html',
   styleUrl: './enquiry-stats.component.css'
 })
-export class EnquiryStatsComponent {
+export class EnquiryStatsComponent implements OnInit {
   @Input() enquiryList: Enquiry[] = [];
   @Input() selectedStatusId: number | null = null;
   @Output() statusFilter = new EventEmitter<number>();
+
+  constructor(private catalogService: CatalogDataService) { }
+
+  ngOnInit(): void {
+    this.catalogService.getStatuses().subscribe();
+  }
 
   onStatusClick(status: number): void {
     this.statusFilter.emit(status);
@@ -37,14 +45,8 @@ export class EnquiryStatsComponent {
     }
   }
 
-  getStatusLabel(status: number): string {
-    switch (status) {
-      case 1: return 'New';
-      case 2: return 'In Progress';
-      case 3: return 'On Hold';
-      case 4: return 'Resolved';
-      default: return '';
-    }
+  getStatusLabel(id: number): string {
+    return this.catalogService.getStatusNameById(id);
   }
 
   countByStatus(status: number): number {

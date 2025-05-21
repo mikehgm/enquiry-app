@@ -1,4 +1,4 @@
 
 <app-loading-overlay></app-loading-overlay>
-<app-header (searchChanged)="onSearchChanged($event)"></app-header>
-<router-outlet/>
+<app-header *ngIf="isReady()" (searchChanged)="onSearchChanged($event)"></app-header>
+<router-outlet *ngIf="isReady()"/>

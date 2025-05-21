@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../service/alert.service';
 import { EmailService } from '../../../service/email.service';
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 
 @Component({
   selector: 'app-send-promotion-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LabelPipe],
   templateUrl: './send-promotion-modal.component.html',
   styleUrl: './send-promotion-modal.component.css'
 

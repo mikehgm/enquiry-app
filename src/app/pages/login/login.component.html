@@ -2,12 +2,12 @@
   <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
     <div class="text-center mb-4">
       <i class="fas fa-user-lock fa-3x text-primary"></i>
-      <h3 class="mt-2">Iniciar Sesión</h3>
+      <h3 class="mt-2">{{'ui_iniciar_session' | label}}</h3>
     </div>
 
     <form (ngSubmit)="login()">
       <div class="mb-3">
-        <label for="email" class="form-label">Correo electrónico</label>
+        <label for="email" class="form-label">{{'ui_email' | label}}</label>
         <div class="input-group">
           <span class="input-group-text"><i class="fas fa-envelope"></i></span>
           <input type="email" id="email" [(ngModel)]="email" name="email" class="form-control" required />
@@ -15,7 +15,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Contraseña</label>
+        <label for="password" class="form-label">{{'ui_password' | label}}</label>
         <div class="input-group">
           <span class="input-group-text"><i class="fas fa-lock"></i></span>
           <input type="password" id="password" [(ngModel)]="password" name="password" class="form-control" required />
@@ -25,7 +25,7 @@
       <div *ngIf="error" class="alert alert-danger text-center">{{ error }}</div>
 
       <button type="submit" class="btn btn-primary w-100">
-        <i class="fas fa-sign-in-alt me-2"></i> Ingresar
+        <i class="fas fa-sign-in-alt me-2"></i> {{'ui_ingresar' | label}}
       </button>
     </form>
   </div>

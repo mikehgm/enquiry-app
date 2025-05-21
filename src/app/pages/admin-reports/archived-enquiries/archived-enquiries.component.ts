@@ -4,10 +4,11 @@ import { Enquiry } from '../../../models/enquiry.model';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BackButtonComponent } from "../../../shared/back-button/back-button.component";
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 @Component({
   selector: 'app-archived-enquiries',
-  imports: [CommonModule, RouterLink, BackButtonComponent],
+  imports: [CommonModule, RouterLink, BackButtonComponent, LabelPipe],
   templateUrl: './archived-enquiries.component.html',
   styleUrls: ['./archived-enquiries.component.css']
 })

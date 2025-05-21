@@ -1,12 +1,13 @@
 <div class="container mt-4">
-  <h2 class="mb-4">Catálogos de la Aplicación</h2>
+  <app-back-button></app-back-button>
+  <h2 class="mb-4">{{'ui_catalogos_de_la_aplicacion' | label}}</h2>
 
   <ul class="nav nav-tabs mb-3">
     <li class="nav-item">
-      <a class="nav-link" [routerLink]="['./status']" routerLinkActive="active">Estados</a>
+      <a class="nav-link" [routerLink]="['./status']" routerLinkActive="active">{{'ui_estados' | label}}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [routerLink]="['./types']" routerLinkActive="active">Tipos</a>
+      <a class="nav-link" [routerLink]="['./types']" routerLinkActive="active">{{'ui_tipos' | label}}</a>
     </li>
   </ul>
 

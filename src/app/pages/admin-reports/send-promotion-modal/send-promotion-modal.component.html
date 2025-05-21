@@ -12,16 +12,16 @@
       <div class="modal-body p-4">
         <!-- Método de envío -->
         <div class="mb-4">
-          <label class="form-label fw-bold">Método de envío</label>
+          <label class="form-label fw-bold">{{'ui_metodo_de_envio' | label}}</label>
           <select [(ngModel)]="selectedMethod" class="form-select">
-            <option value="email">📧 Correo electrónico</option>
-            <option value="whatsapp">💬 WhatsApp</option>
+            <option value="email">📧 {{'ui_correo_electronico' | label}}</option>
+            <option value="whatsapp">💬 {{'ui_whatsapp' | label}}</option>
           </select>
         </div>
 
         <!-- Imagen -->
         <div class="mb-4" *ngIf="selectedMethod === 'email'">
-          <label class="form-label fw-bold">Imagen promocional (opcional no mayor a 10mb)</label>
+          <label class="form-label fw-bold">{{'ui_imagen_promocional' | label}}</label>
           <input type="file" (change)="onFileChange($event)" class="form-control mb-2">
           <div *ngIf="imageFile" class="border rounded p-2 mt-2 text-center">
             <img [src]="imagePreview" class="img-fluid rounded shadow-sm" style="max-height: 200px;" />
@@ -30,17 +30,17 @@
 
         <!-- Mensaje -->
         <div class="mb-3">
-          <label class="form-label fw-bold">Mensaje personalizado</label>
+          <label class="form-label fw-bold">{{'ui_message' | label}}</label>
           <textarea [(ngModel)]="message" class="form-control" rows="5" placeholder="Escribe tu mensaje..."></textarea>
         </div>
       </div>
 
       <div class="modal-footer bg-light px-4 py-3">
         <button class="btn btn-secondary" (click)="close()">
-          <i class="fas fa-times me-1"></i> Cancelar
+          <i class="fas fa-times me-1"></i> {{'ui_cancelar' | label}}
         </button>
         <button class="btn btn-success" (click)="submit()" [disabled]="!message.trim()">
-          <i class="fas fa-paper-plane me-1"></i> Enviar
+          <i class="fas fa-paper-plane me-1"></i> {{'ui_enviar' | label}}
         </button>
       </div>
 

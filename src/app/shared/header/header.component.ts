@@ -3,13 +3,14 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
-import Swal from 'sweetalert2';
 import { AlertService } from '../../service/alert.service';
+import { LabelPipe } from '../../pipes/label.pipe';
 declare var bootstrap: any; // Solo si no tienes @types/bootstrap
 
 @Component({
+  standalone: true,
   selector: 'app-header',
-  imports: [RouterLink, CommonModule, FormsModule],
+  imports: [RouterLink, CommonModule, FormsModule, LabelPipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

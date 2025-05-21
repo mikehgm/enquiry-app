@@ -5,11 +5,12 @@ import { AlertService } from '../../service/alert.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LabelPipe } from '../../pipes/label.pipe';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LabelPipe],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.css'
 })

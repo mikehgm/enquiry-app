@@ -1,6 +1,6 @@
 <div class="container mt-5">
   <app-back-button></app-back-button>
-  <h2 class="mb-4"><i class="fas fa-archive me-2 text-warning"></i>Enquiries Archivados</h2>
+  <h2 class="mb-4"><i class="fas fa-archive me-2 text-warning"></i>{{'ui_enquiries_archivados' | label}}</h2>
   <div class="card shadow rounded-4">
     <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
       <span class="badge bg-secondary">{{ archivedEnquiries.length }} resultados</span>
@@ -11,11 +11,11 @@
         <table class="table table-hover align-middle">
           <thead class="table-light">
             <tr>
-              <th>Folio</th>
-              <th>Cliente</th>
-              <th>Fecha</th>
-              <th>Tipo</th>
-              <th>Acciones</th>
+              <th>{{'ui_folio' | label}}</th>
+              <th>{{'ui_cliente' | label}}</th>
+              <th>{{'ui_fecha' | label}}</th>
+              <th>{{'ui_tipo' | label}}</th>
+              <th>{{'ui_acciones' | label}}</th>
             </tr>
           </thead>
           <tbody>
@@ -26,7 +26,7 @@
               <td>{{ getTypeLabel(enquiry.enquiryTypeId) }}</td>
               <td>
                 <a class="btn btn-sm btn-outline-primary" [routerLink]="['/enquiry/ticket', enquiry.enquiryId]">
-                  <i class="fas fa-eye me-1"></i> Ver Ticket
+                  <i class="fas fa-eye me-1"></i> {{'ui_ver_ticket' | label}}
                 </a>
               </td>
             </tr>

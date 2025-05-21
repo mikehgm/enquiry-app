@@ -2,14 +2,12 @@
   <table class="table table-bordered table-hover">
     <thead class="table-light">
       <tr>
-        <th>ID</th>
-        <th>Nombre del Tipo</th>
-        <th>Acciones</th>
+        <th>{{'ui_nombre_del_tipo' | label}}</th>
+        <th>{{'ui_acciones' | label}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let type of types; let i = index">
-        <td>{{ type.typeId }}</td>
         <td>
           <div *ngIf="editIndex !== i; else editMode">
             {{ type.typeName }}
@@ -20,14 +18,14 @@
         </td>
         <td>
           <button *ngIf="editIndex !== i" class="btn btn-sm btn-outline-primary me-1" (click)="startEdit(i)">
-            <i class="fas fa-edit me-1"></i> Editar
+            <i class="fas fa-edit me-1"></i> {{'ui_edit' | label}}
           </button>
           <div *ngIf="editIndex === i">
             <button class="btn btn-sm btn-success me-1" (click)="save(type)">
-              <i class="fas fa-check me-1"></i> Guardar
+              <i class="fas fa-check me-1"></i> {{'ui_guardar' | label}}
             </button>
             <button class="btn btn-sm btn-secondary" (click)="cancel()">
-              <i class="fas fa-times me-1"></i> Cancelar
+              <i class="fas fa-times me-1"></i> {{'ui_cancelar' | label}}
             </button>
           </div>
         </td>

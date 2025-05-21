@@ -46,4 +46,13 @@ export class AlertService {
       cancelButtonText: options.cancelButtonText || 'Cancelar'
     });
   }
+
+  info(title: string, text = '') {
+    return Swal.fire({
+      icon: 'info',
+      title,
+      text,
+      confirmButtonText: 'OK'
+    });
+  }
 }

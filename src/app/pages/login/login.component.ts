@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import { AlertService } from '../../service/alert.service';
+import { LabelPipe } from '../../pipes/label.pipe';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LabelPipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

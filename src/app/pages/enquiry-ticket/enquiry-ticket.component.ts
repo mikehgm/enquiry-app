@@ -7,11 +7,12 @@ import { EnquiryDataService } from '../../service/enquiry-data.service';
 import { Enquiry } from '../../models/enquiry.model';
 import { AlertService } from '../../service/alert.service';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+import { LabelPipe } from '../../pipes/label.pipe';
 
 @Component({
   selector: 'app-enquiry-ticket',
   standalone: true,
-  imports: [CommonModule, BackButtonComponent],
+  imports: [CommonModule, BackButtonComponent, LabelPipe],
   templateUrl: './enquiry-ticket.component.html',
   styleUrl: './enquiry-ticket.component.css'
 })

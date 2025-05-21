@@ -1,22 +1,22 @@
 <div class="container mt-4">
   <h3 class="mb-4">
     <i class="fas" [ngClass]="isEdit ? 'fa-user-edit' : 'fa-user-plus'"></i>
-    {{ isEdit ? 'Editar Usuario' : 'Nuevo Usuario' }}
+    {{ isEdit ? 'Editar Usuario' : 'ui_nuevo_usuario' | label }}
   </h3>
 
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="card p-4 shadow-sm">
     <div class="mb-3">
-      <label class="form-label">Nombre completo</label>
+      <label class="form-label">{{'ui_full_name' | label}}</label>
       <input type="text" class="form-control" formControlName="fullName" />
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Correo electrónico</label>
+      <label class="form-label">{{'ui_email' | label}}</label>
       <input type="email" class="form-control" formControlName="email" />
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Rol</label>
+      <label class="form-label">{{'ui_rol' | label}}</label>
       <select class="form-select" formControlName="role">
         <option value="User">User</option>
         <option value="Admin">Admin</option>
@@ -26,15 +26,15 @@
     <div class="form-check mb-3">
       <input class="form-check-input" type="checkbox" formControlName="isConfirmed" id="isConfirmed" />
       <label class="form-check-label" for="isConfirmed">
-        ¿Confirmado?
+        {{'ui_confirmado' | label}}
       </label>
     </div>
 
     <div class="d-flex justify-content-between">
       <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">
-        <i class="fas fa-save me-1"></i> {{ isEdit ? 'Actualizar' : 'Guardar' }}
+        <i class="fas fa-save me-1"></i> {{ isEdit ? 'Actualizar' : 'ui_guardar' | label }}
       </button>
-      <a class="btn btn-secondary" [routerLink]="['/admin-users']">Cancelar</a>
+      <a class="btn btn-secondary" [routerLink]="['/admin-users']">{{'ui_cancelar' | label}}</a>
     </div>
   </form>
 </div>

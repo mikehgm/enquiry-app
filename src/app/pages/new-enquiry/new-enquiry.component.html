@@ -8,7 +8,7 @@
                 <i [ngClass]="isEdit ? 'fas fa-edit' : 'fas fa-inbox'"
                   class="me-2 fs-3">
                 </i>
-                {{ isEdit ? 'Edit Enquiry' : 'New Enquiry' }}
+                {{ isEdit ? 'Edit Enquiry' : 'ui_new_enquiry' | label }}
               </h1>
             </div>
             <div class="card-body p-4 p-lg-5">
@@ -16,33 +16,33 @@
 
                 <div *ngIf="isEdit || newEnquiry.folio">
                   <button class="btn btn-secondary btn-status" [routerLink]="['/enquiry/ticket', newEnquiry.enquiryId]">
-                    <i class="fas fa-receipt me-1"></i> Ver Ticket
+                    <i class="fas fa-receipt me-1"></i> {{'ui_ver_ticket' | label}}
                   </button>
                 </div>
 
                 <div class="d-flex gap-2" *ngIf="isEdit">
                   <button
                     class="btn btn-warning btn-status"
-                    (click)="updateStatus(2)"
-                    [disabled]="newEnquiry.enquiryStatusId === 2"
-                    [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === 2 }">
-                    <i class="fas fa-spinner me-1"></i> In Progress
+                    (click)="updateStatus(enquiryStatus.IN_PROGRESS)"
+                    [disabled]="newEnquiry.enquiryStatusId === enquiryStatus.IN_PROGRESS"
+                    [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === enquiryStatus.IN_PROGRESS }">
+                    <i class="fas fa-spinner me-1"></i> {{ getStatusLabel(enquiryStatus.IN_PROGRESS) }}
                   </button>
 
                   <button
                     class="btn btn-secondary btn-status"
-                    (click)="updateStatus(3)"
-                    [disabled]="newEnquiry.enquiryStatusId === 3"
-                    [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === 3 }">
-                    <i class="fas fa-pause-circle me-1"></i> On Hold
+                    (click)="updateStatus(enquiryStatus.ON_HOLD)"
+                    [disabled]="newEnquiry.enquiryStatusId === enquiryStatus.ON_HOLD"
+                    [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === enquiryStatus.ON_HOLD }">
+                    <i class="fas fa-pause-circle me-1"></i> {{ getStatusLabel(enquiryStatus.ON_HOLD) }}
                   </button>
 
                   <button
                     class="btn btn-success btn-status"
-                    (click)="updateStatus(4)"
-                    [disabled]="newEnquiry.enquiryStatusId === 4"
-                    [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === 4 }">
-                    <i class="fas fa-check-circle me-1"></i> Resolved
+                    (click)="updateStatus(enquiryStatus.RESOLVED)"
+                    [disabled]="newEnquiry.enquiryStatusId === enquiryStatus.RESOLVED"
+                    [ngClass]="{ 'not-allowed': newEnquiry.enquiryStatusId === enquiryStatus.RESOLVED }">
+                    <i class="fas fa-check-circle me-1"></i> {{ getStatusLabel(enquiryStatus.RESOLVED) }}
                   </button>
                 </div>
 
@@ -59,7 +59,7 @@
                         placeholder="Folio"
                         disabled="true"
                         readonly>
-                      <label for="folio">Folio</label>
+                      <label for="folio">{{'ui_folio' | label}}</label>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
@@ -72,7 +72,7 @@
                         }
 
                       </select>
-                      <label for="enquiryTypeId" class="required-field">Enquiry Type</label>
+                      <label for="enquiryTypeId" class="required-field">{{'ui_enquiry_type' | label}}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -83,39 +83,39 @@
                           <option [value]="status.statusId">{{ status.status }}</option>
                         }
                       </select>
-                      <label for="enquiryStatusId" class="required-field">Status</label>
+                      <label for="enquiryStatusId" class="required-field">{{'ui_status' | label}}</label>
                     </div>
                   </div>
                 </div>
 
                 <div class="form-floating mb-3">
                   <input type="text" name="customerName" [(ngModel)]="newEnquiry.customerName" class="form-control" id="customerName" placeholder=" " required>
-                  <label for="customerName" class="required-field">Full Name</label>
+                  <label for="customerName" class="required-field">{{'ui_full_name' | label}}</label>
                 </div>
 
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-floating mb-3">
                       <input type="email" name="email" [(ngModel)]="newEnquiry.email" class="form-control" id="email" placeholder=" " required>
-                      <label for="email" class="required-field">Email Address</label>
+                      <label for="email" class="required-field">{{'ui_correo_electronico' | label}}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-floating mb-3">
                       <input type="tel" name="phone" [(ngModel)]="newEnquiry.phone" class="form-control" id="phone" placeholder=" " required>
-                      <label for="phone" class="required-field">Phone Number</label>
+                      <label for="phone" class="required-field">{{'ui_phone_number' | label}}</label>
                     </div>
                   </div>
                 </div>
 
                 <div class="form-floating mb-4">
                   <textarea class="form-control" name="message" [(ngModel)]="newEnquiry.message" id="message" style="height: 150px" placeholder=" " required></textarea>
-                  <label for="message" class="required-field">Message</label>
+                  <label for="message" class="required-field">{{'ui_message' | label}}</label>
                 </div>
 
                 <div class="form-floating mb-4">
                   <textarea class="form-control" name="resolution" [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px" placeholder=" " ></textarea>
-                  <label for="resolution">resolution</label>
+                  <label for="resolution">{{'ui_resolution' | label}}</label>
                 </div>
 
                 <div class="row">
@@ -130,7 +130,7 @@
                         class="form-control ps-5"
                         id="costo"
                         placeholder="Costo" required>
-                      <label for="costo" class="required-field">Costo</label>
+                      <label for="costo" class="required-field">{{'ui_costo' | label}}</label>
                       <span class="position-absolute money-symbol translate-middle-y ms-3 text-muted">$</span>
                     </div>
                   </div>
@@ -143,7 +143,7 @@
                         class="form-control"
                         id="fechaEntrega"
                         placeholder="Fecha de entrega" required="">
-                      <label for="fechaEntrega" class="required-field">Fecha de Entrega</label>
+                      <label for="fechaEntrega" class="required-field">{{'ui_fecha_de_entrega' | label}}</label>
                     </div>
                   </div>
                 </div>
@@ -151,7 +151,7 @@
                 <div class="d-grid">
                   <button type="submit" class="btn btn-primary mt-3" [disabled]="loading || !formRef.valid">
                     <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {{ loading ? 'Saving...' : 'Submit' }}
+                    {{ loading ? 'Saving...' : 'ui_enviar' | label }}
                   </button>
                 </div>
               </form>

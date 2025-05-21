@@ -1,14 +1,14 @@
 <div class="card shadow-sm mb-4" *ngIf="mostRequested && leastRequested">
   <div class="card-body text-center">
-    <h5 class="card-title">🎯 Most & Least Requested Types</h5>
+    <h5 class="card-title">🎯 {{'ui_most_and_least_requested_types' | label}}</h5>
     <div class="row mt-4">
       <div class="col-md-6">
-        <h6 class="text-success"><i class="fas fa-star me-1"></i> Most Requested</h6>
+        <h6 class="text-success"><i class="fas fa-star me-1"></i> {{'ui_most_requested' | label}}</h6>
         <p class="mb-1 fw-bold">{{ mostRequested.type }}</p>
         <span class="badge bg-success fs-6 badge-most">{{ mostRequested.count }} requests</span>
       </div>
       <div class="col-md-6">
-        <h6 class="text-muted"><i class="fas fa-angle-down me-1"></i> Least Requested</h6>
+        <h6 class="text-muted"><i class="fas fa-angle-down me-1"></i> {{'ui_least_requested' | label}}</h6>
         <p class="mb-1 fw-bold">{{ leastRequested.type }}</p>
         <span class="badge bg-secondary fs-6 badge-least">{{ leastRequested.count }} requests</span>
       </div>
