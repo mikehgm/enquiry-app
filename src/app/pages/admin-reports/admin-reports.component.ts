@@ -7,7 +7,6 @@ import { StatusChartComponent } from './status-chart/status-chart.component';
 import { TrendChartComponent } from "./trend-chart/trend-chart.component";
 import { RevenueChartComponent } from "./revenue-chart/revenue-chart.component";
 import { TopTypeCardComponent } from './top-type-card/top-type-card.component';
-import { LoyalClientsCardComponent } from './loyal-clients-card/loyal-clients-card.component';
 import { LoyalClientsTableComponent } from './loyal-clients-table/loyal-clients-table.component';
 import { parseLocalDate } from '../../utils/date-utils';
 import * as XLSX from 'xlsx';

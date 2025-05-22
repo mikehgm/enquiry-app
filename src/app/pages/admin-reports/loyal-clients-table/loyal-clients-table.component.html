@@ -3,7 +3,7 @@
     <h5 class="card-title mb-3">💎 {{'ui_loyal_clients' | label}}</h5>
 
     <div *ngIf="loading" class="text-center text-muted py-4">
-      <i class="fas fa-spinner fa-spin me-1"></i> Loading...
+      <i class="fas fa-spinner fa-spin me-1"></i> {{'ui_loading' | label}}...
     </div>
 
     <div *ngIf="!loading && loyalClients.length > 0" class="table-responsive">

@@ -1,13 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { LabelPipe } from '../../pipes/label.pipe';
 
 @Component({
   standalone: true,
   selector: 'app-back-button',
   templateUrl: './back-button.component.html',
   styleUrls: ['./back-button.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, LabelPipe]
 })
 export class BackButtonComponent {
   @Input() label: string = 'Regresar';

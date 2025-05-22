@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { PeriodType } from '../admin-reports.component';
 import { parseLocalDate } from '../../../utils/date-utils';
+import { LabelPipe } from '../../../pipes/label.pipe';
 
 @Component({
   selector: 'app-loyal-clients-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LabelPipe],
   templateUrl: './loyal-clients-card.component.html',
   styleUrl: './loyal-clients-card.component.css'
 })

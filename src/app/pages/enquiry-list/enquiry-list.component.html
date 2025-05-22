@@ -93,8 +93,8 @@
           <p class="card-text"><strong>{{'ui_tipo' | label}}:</strong> {{  enquiry.enquiryTypeId | typeName }}</p>
           <p class="card-text"><strong>{{'ui_message' | label}}:</strong> {{ enquiry.message }}</p>
           <p class="card-text d-none d-sm-block"><strong>{{'ui_resolution' | label}}:</strong> {{ enquiry.resolution }}</p>
-          <p class="card-text"><strong>Created on:</strong> {{ enquiry.createdDate | date:'shortDate' }}</p>
-          <p class="card-text"><strong>Attended by:</strong> {{ enquiry.updatedBy }}</p>
+          <p class="card-text"><strong>{{'ui_created_at' | label}}:</strong> {{ enquiry.createdDate | date:'shortDate' }}</p>
+          <p class="card-text"><strong>{{'ui_attended_by' | label}}:</strong> {{ enquiry.updatedBy }}</p>
 
           <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 w-100">
             <div class="due-date-box py-3 rounded text-center" [ngClass]="getStatusClass(enquiry.enquiryStatusId)">

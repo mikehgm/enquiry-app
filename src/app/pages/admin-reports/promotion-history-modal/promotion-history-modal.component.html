@@ -9,12 +9,12 @@
 
       <div class="modal-body">
         <div *ngIf="history.length === 0" class="text-center text-muted p-4">
-          No hay promociones enviadas aún.
+          {{'ui_no_promotions' | label}}
         </div>
 
         <div class="bg-light border-start border-4 border-primary p-3 mb-4 rounded shadow-sm small text-secondary">
           <i class="fas fa-clock me-2 text-primary"></i>
-          Por políticas del sistema, las promociones solo pueden enviarse una vez cada <strong>24 horas</strong> por cliente y canal.
+          {{'ui_system_politics' | label}}
         </div>
 
         <div *ngIf="history.length > 0">

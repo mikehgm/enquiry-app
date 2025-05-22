@@ -20,27 +20,27 @@
 
     <div class="card-body">
       <p>{{'ui_company' | label}}</p>
-      <p>Calle primera, el centro #1234, CP 12345, Ciudad, Estado</p>
-      <p>Sucursal 123</p>
+      <p>{{'ui_company_address' | label}}</p>
+      <p>{{'ui_company_sucursal' | label}}</p>
       <p><strong>{{'ui_folio' | label}}:</strong><p>
       <h3>{{ enquiry.folio }}</h3>
       <p><strong>{{'ui_cliente' | label}}:</strong> {{ enquiry.customerName }}</p>
       <p><strong>{{'ui_phone' | label}}:</strong> {{ enquiry.phone }}</p>
       <p><strong>{{'ui_email' | label}}:</strong> {{ enquiry.email }}</p>
       <hr>
-      <p><strong>Servicio:</strong> {{ getTypeLabel(enquiry.enquiryTypeId) }}</p>
+      <p><strong>{{'ui_service_type' | label}}:</strong> {{ getTypeLabel(enquiry.enquiryTypeId) }}</p>
       <p><strong>{{'ui_message' | label}}:</strong><br> {{ enquiry.message }}</p>
       <hr>
       <p><strong>{{'ui_costo' | label}}:</strong></p>
       <h3>${{ enquiry.costo?.toFixed(2) }}</h3>
       <hr>
       <p><strong>{{'ui_fecha_de_entrega' | label}}:</strong> {{ enquiry.dueDate | date }}</p>
-      <p><strong>Atendi&oacute;:</strong> {{ enquiry.createdBy }}</p>
-      <p><strong>Fecha de creaci&oacute;n:</strong> {{ enquiry.createdDate | date }}</p>
+      <p><strong>{{'ui_attended' | label}}:</strong> {{ enquiry.createdBy }}</p>
+      <p><strong>{{'ui_date_attended' | label}}:</strong> {{ enquiry.createdDate | date }}</p>
       <hr>
-      <p>Gracias por su preferencia</p>
-      <p>Para informacion de nuestros servicios puede visitar nuestra pagina web</p>
-      <p>https://www.dominio.com</p>
+      <p>{{'ui_thanks' | label}}</p>
+      <p>{{'ui_info' | label}}</p>
+      <p>{{'ui_url_address' | label}}</p>
     </div>
   </div>
   <aside class="ticket-aside">

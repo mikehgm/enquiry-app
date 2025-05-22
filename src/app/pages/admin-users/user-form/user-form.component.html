@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <h3 class="mb-4">
     <i class="fas" [ngClass]="isEdit ? 'fa-user-edit' : 'fa-user-plus'"></i>
-    {{ isEdit ? 'Editar Usuario' : 'ui_nuevo_usuario' | label }}
+    {{ isEdit ? ('ui_edit_user' | label) : ('ui_nuevo_usuario' | label) }}
   </h3>
 
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="card p-4 shadow-sm">
@@ -32,7 +32,7 @@
 
     <div class="d-flex justify-content-between">
       <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">
-        <i class="fas fa-save me-1"></i> {{ isEdit ? 'Actualizar' : 'ui_guardar' | label }}
+        <i class="fas fa-save me-1"></i> {{ isEdit ? ('ui_actualizar' | label) : ('ui_guardar' | label) }}
       </button>
       <a class="btn btn-secondary" [routerLink]="['/admin-users']">{{'ui_cancelar' | label}}</a>
     </div>

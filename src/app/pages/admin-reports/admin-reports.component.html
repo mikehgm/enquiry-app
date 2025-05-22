@@ -108,7 +108,7 @@
   <div *ngIf="showFullTable" class="mt-5">
     <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
       <h4 class="mb-0">
-        📄 {{'ui_enquiries' | label}} {{ filteredList.length > 0 ? 'in Date Range' : 'List' }}
+        📄 {{'ui_enquiries' | label}} {{ filteredList.length > 0 ? ('ui_in_date_range' | label) : ('ui_list' | label) }}
         <span class="badge bg-dark ms-2">
           {{ (filteredList.length > 0 ? filteredList.length : enquiryList.length) }} total
         </span>
@@ -152,7 +152,7 @@
             <th>{{'ui_status' | label}}</th>
 
             <th (click)="setSort('createdDate')" style="cursor:pointer">
-              Created <i *ngIf="sortColumn === 'createdDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+              {{'ui_date_attended' | label}} <i *ngIf="sortColumn === 'createdDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
             </th>
             <th (click)="setSort('dueDate')" style="cursor:pointer">
               {{'ui_fecha_de_entrega' | label}} <i *ngIf="sortColumn === 'dueDate'" [class]="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>

@@ -5,12 +5,12 @@
       <div class="col-md-6">
         <h6 class="text-success"><i class="fas fa-star me-1"></i> {{'ui_most_requested' | label}}</h6>
         <p class="mb-1 fw-bold">{{ mostRequested.type }}</p>
-        <span class="badge bg-success fs-6 badge-most">{{ mostRequested.count }} requests</span>
+        <span class="badge bg-success fs-6 badge-most">{{ mostRequested.count }} {{'ui_requested' | label}}</span>
       </div>
       <div class="col-md-6">
         <h6 class="text-muted"><i class="fas fa-angle-down me-1"></i> {{'ui_least_requested' | label}}</h6>
         <p class="mb-1 fw-bold">{{ leastRequested.type }}</p>
-        <span class="badge bg-secondary fs-6 badge-least">{{ leastRequested.count }} requests</span>
+        <span class="badge bg-secondary fs-6 badge-least">{{ leastRequested.count }} {{'ui_requested' | label}}</span>
       </div>
     </div>
   </div>

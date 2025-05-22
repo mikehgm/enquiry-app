@@ -4,7 +4,7 @@
 
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">
-          <i class="fas fa-bullhorn me-2"></i> Enviar Promoción a <strong>{{ clientName }}</strong>
+          <i class="fas fa-bullhorn me-2"></i> {{'ui_send_promotion_to' | label}} <strong>{{ clientName }}</strong>
         </h5>
         <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="close()"></button>
       </div>
@@ -14,7 +14,7 @@
         <div class="mb-4">
           <label class="form-label fw-bold">{{'ui_metodo_de_envio' | label}}</label>
           <select [(ngModel)]="selectedMethod" class="form-select">
-            <option value="email">📧 {{'ui_correo_electronico' | label}}</option>
+            <option value="email">📧 {{'ui_email' | label}}</option>
             <option value="whatsapp">💬 {{'ui_whatsapp' | label}}</option>
           </select>
         </div>
