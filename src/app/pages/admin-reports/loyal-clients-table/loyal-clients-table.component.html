@@ -54,8 +54,7 @@
   [clientId]="selectedClient?.clientId ?? 0"
   [clientName]="selectedClient?.name || ''"
   [email]="selectedClient?.email || ''"
-  [phone]="selectedClient?.phone || ''"
-  (send)="onPromotionSend($event)">
+  [phone]="selectedClient?.phone || ''">
 </app-send-promotion-modal>
 
 <app-promotion-history-modal

@@ -12,7 +12,7 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="enquiry/new" (click)="collapseNavbar()">{{ 'ui_new_enquiry' | label }}</a>
         </li>
-        <li class="nav-item dropdown" *ngIf="isAdmin">
+        <li class="nav-item dropdown" *ngIf="isAdmin || isSuperAdmin">
           <a
             class="nav-link dropdown-toggle"
             href="javascript:void(0);"
@@ -29,17 +29,17 @@
             </a></li>
           </ul>
         </li>
-        <li class="nav-item" *ngIf="isAdmin">
+        <li class="nav-item" *ngIf="isAdmin || isSuperAdmin">
           <a class="nav-link" routerLink="/admin-users" (click)="collapseNavbar()">
             {{ 'ui_admin_users' | label }}
           </a>
         </li>
-        <li class="nav-item" *ngIf="isAdmin">
+        <li class="nav-item" *ngIf="isAdmin || isSuperAdmin">
           <a class="nav-link" routerLink="/admin/catalogos" (click)="collapseNavbar()">
             {{ 'ui_catalogos' | label }}
           </a>
         </li>
-        <li class="nav-item" *ngIf="isAdmin">
+        <li class="nav-item" *ngIf="isSuperAdmin">
           <a class="nav-link" routerLink="/admin/config-ui">Config</a>
         </li>
       </ul>

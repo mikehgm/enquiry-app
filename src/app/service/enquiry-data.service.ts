@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Enquiry } from '../models/enquiry.model';
 import { environment } from '../../environment/environment';
 import { Observable } from 'rxjs';
+import { EnquiryImagen } from '../models/enquiryImagen.model';
 
 
 @Injectable({
@@ -54,4 +55,21 @@ export class EnquiryDataService {
   getArchivedEnquiries(): Observable<Enquiry[]> {
     return this.http.get<Enquiry[]>(`${environment.apiUrl}/api/EnquiryData/GetArchivedEnquiries`);
   }
+
+  getEnquiryImages(enquiryId: number): Observable<EnquiryImagen[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/api/EnquiryData/GetImagesByEnquiry/${enquiryId}`);
+  }
+
+  uploadEnquiryImages(enquiryId: number, files: File[]): Observable<any> {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file, file.name);
+    });
+    return this.http.post(`${environment.apiUrl}/api/EnquiryData/UploadEnquiryImages/${enquiryId}`, formData );
+  }
+
+  deleteEnquiryImage(imageId: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/EnquiryData/DeleteImage/${imageId}`);
+  }
+
 }

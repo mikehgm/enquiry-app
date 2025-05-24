@@ -57,29 +57,6 @@ export class LoyalClientsTableComponent implements OnChanges {
     setTimeout(() => this.sendPromoModal.open(), 0);
   }
 
-  onPromotionSend(data: {
-    method: 'email' | 'whatsapp',
-    message: string,
-    imageFile?: File
-  }): void {
-    console.log('📤 Enviando promoción:', data, 'a', this.selectedClient);
-
-    // Aquí puedes:
-    // - Llamar al EmailService para enviar email
-    // - O generar link para WhatsApp
-
-    if (data.method === 'whatsapp') {
-      const phone = this.selectedClient?.phone.replace(/\D/g, '');
-      const message = encodeURIComponent(data.message);
-      window.open(`https://wa.me/52${phone}?text=${message}`, '_blank');
-    }
-
-    if (data.method === 'email' && data.imageFile) {
-      // Preparar envío por email (puede hacerse por backend)
-      alert('📧 Email con imagen y mensaje será enviado (pendiente integración)');
-    }
-  }
-
   openHistoryModal(client: LoyalClient): void {
     this.selectedClient = client;
     this.historyModalVisible = true;
@@ -94,6 +71,4 @@ export class LoyalClientsTableComponent implements OnChanges {
       }
     });
   }
-
-
 }

@@ -15,6 +15,8 @@ import { AdminCatalogsComponent } from './pages/admin-catalogs/admin-catalogs.co
 import { StatusListComponent } from './pages/admin-catalogs/status-list/status-list.component';
 import { TypeListComponent } from './pages/admin-catalogs/type-list/type-list.component';
 import { AppConfigComponent } from './pages/admin/app-config/app-config.component';
+import { SuperAdminGuard } from './guards/super-admin.guard';
+import { AdminOrSuperGuard } from './guards/admin-or-super.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -40,7 +42,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin-users',
-    canActivate: [AuthGuard, AdminGuard],
+    canActivate: [AuthGuard, AdminOrSuperGuard],
     children: [
       { path: '', component: AdminUsersComponent },
       { path: 'create', component: UserFormComponent },
@@ -50,17 +52,17 @@ export const routes: Routes = [
   {
     path: 'admin/reports',
     component: AdminReportsComponent,
-    canActivate: [AuthGuard, AdminGuard]
+    canActivate: [AuthGuard, AdminOrSuperGuard]
   },
   {
     path: 'admin/reports/archived',
     component: ArchivedEnquiriesComponent,
-    canActivate: [AuthGuard, AdminGuard],
+    canActivate: [AuthGuard, AdminOrSuperGuard],
   },
   {
     path: 'admin/catalogos',
     component: AdminCatalogsComponent,
-    canActivate: [AdminGuard],
+    canActivate: [AuthGuard, AdminOrSuperGuard],
     children: [
       { path: 'status', component: StatusListComponent },
       { path: 'types', component: TypeListComponent },
@@ -70,7 +72,7 @@ export const routes: Routes = [
   {
     path: 'admin/config-ui',
     component: AppConfigComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AuthGuard, SuperAdminGuard]
   },
   {
     path: 'confirm-account',

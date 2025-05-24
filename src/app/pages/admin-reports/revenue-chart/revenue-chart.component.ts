@@ -1,9 +1,11 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { parseLocalDate } from '../../../utils/date-utils';
+import { AppConfigService } from '../../../service/app-config.service';
+
 type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
@@ -17,10 +19,12 @@ export class RevenueChartComponent implements OnChanges {
   @Input() dateRange!: { from: string; to: string };
   @Input() selectedPeriod!: PeriodType;
 
+  private config = inject(AppConfigService);
+
   public barChartOptions: ChartOptions<'bar'> = {
     responsive: true,
     plugins: {
-      title: { display: true, text: 'Revenue Over Time' },
+      title: { display: true, text: '' },
       legend: { display: false }
     },
     scales: {
@@ -52,9 +56,11 @@ export class RevenueChartComponent implements OnChanges {
     this.barChartLabels = labels;
     this.barChartData = [{
       data: revenueTotals,
-      label: 'Revenue',
+      label: this.config.getLabel('ui_revenue_label') || 'Revenue',
       backgroundColor: ['#132A13', '#31572C', '#4F772D', '#90A955']
     }];
+
+    this.barChartOptions.plugins!.title!.text = this.config.getLabel('ui_enquiries_revenue_chart') || 'Revenue Over Time';
   }
 
   private generateDateLabels(from: Date, to: Date): string[] {
@@ -135,4 +141,3 @@ export class RevenueChartComponent implements OnChanges {
     return labels.map(l => +(sums.get(l)?.toFixed(2) || 0));
   }
 }
-

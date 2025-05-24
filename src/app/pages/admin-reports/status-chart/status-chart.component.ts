@@ -1,9 +1,12 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { parseLocalDate } from '../../../utils/date-utils';
+import { CatalogDataService } from '../../../service/catalog-data.service';
+import { AppConfigService } from '../../../service/app-config.service';
+
 type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
@@ -17,21 +20,26 @@ export class StatusChartComponent implements OnChanges {
   @Input() dateRange!: { from: string; to: string };
   @Input() selectedPeriod!: PeriodType;
 
+  private catalogService = inject(CatalogDataService);
+  private config = inject(AppConfigService);
+
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: true,
     plugins: {
-      title: { display: true, text: 'Enquiries by Status (Pie Chart)' },
+      title: { display: true, text: '' },
       legend: { position: 'bottom' }
     }
   };
 
-  public pieChartLabels: string[] = ['New', 'In Progress', 'On Hold', 'Resolved'];
+  public pieChartLabels: string[] = [];
   public pieChartData: ChartConfiguration<'pie'>['data'] = {
-    labels: this.pieChartLabels,
-    datasets: [{
-      data: [0, 0, 0, 0],
-      backgroundColor: ['#0d6efd', '#ffc107', '#6c757d', '#198754']
-    }]
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: []
+      }
+    ]
   };
 
   ngOnChanges(): void {
@@ -45,21 +53,42 @@ export class StatusChartComponent implements OnChanges {
       return created >= from && created <= to;
     });
 
-    const counts = [0, 0, 0, 0];
+    const statusCounts: { [statusId: number]: number } = {};
     for (const enquiry of filtered) {
-      if (enquiry.enquiryStatusId >= 1 && enquiry.enquiryStatusId <= 4) {
-        counts[enquiry.enquiryStatusId - 1]++;
-      }
+      const id = enquiry.enquiryStatusId;
+      statusCounts[id] = (statusCounts[id] || 0) + 1;
     }
 
+    const labels: string[] = [];
+    const data: number[] = [];
+    const backgroundColor: string[] = [];
+
+    const colorMap = new Map<number, string>([
+      [1, '#0d6efd'],
+      [2, '#ffc107'],
+      [3, '#6c757d'],
+      [4, '#198754']
+    ]);
+
+    for (const statusId of Object.keys(statusCounts).map(Number)) {
+      labels.push(this.catalogService.getStatusNameById(statusId));
+      data.push(statusCounts[statusId]);
+      backgroundColor.push(colorMap.get(statusId) || '#999');
+    }
+
+    this.pieChartLabels = labels;
+
     this.pieChartData = {
-      labels: this.pieChartLabels,
-      datasets: [{
-        data: counts,
-        backgroundColor: ['#0d6efd', '#ffc107', '#6c757d', '#198754']
-      }]
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor
+        }
+      ]
     };
+
+    const title = this.config.getLabel('ui_enquiries_pie_chart') || 'Enquiries by Status';
+    this.pieChartOptions.plugins!.title!.text = title;
   }
-
-
 }

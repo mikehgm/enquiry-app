@@ -57,6 +57,10 @@ export class HeaderComponent implements OnInit {
     return this.authService.getRole() === 'Admin';
   }
 
+  get isSuperAdmin(): boolean {
+    return this.authService.getRole() === 'SuperAdmin';
+  }
+
   collapseNavbar(): void {
     this.isNavbarOpen = false;
     const collapseEl = this.navbarCollapse.nativeElement;

@@ -275,7 +275,7 @@ export class EnquiryListComponent implements OnInit, OnDestroy {
   isArchivable(statusId: number): boolean {
     let validate = false;
 
-    if (statusId === 4 && this.authService.getRole() === 'Admin') {
+    if (statusId === 4 && (this.authService.getRole() === 'Admin' || this.authService.getRole() === 'SuperAdmin')) {
       validate = true;
     }
 

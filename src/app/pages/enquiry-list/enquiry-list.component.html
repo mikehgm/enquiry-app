@@ -19,42 +19,38 @@
           (statusFilter)="onStatusFilter($event)">
         </app-enquiry-stats>
       </div>
-
-      <div class="col-12">
+    </div>
+    <div class="row mb-3">
+        <div class="col-9 col-sm-9 col-md-5 col-lg-3 mb-3">
+          <input class="form-control"
+                [(ngModel)]="searchTerm"
+                [ngModelOptions]="{ standalone: true }"
+                (keyup.enter)="onSearchChange()"
+                type="text"
+                placeholder="Search">
+        </div>
+        <div class="col-3 col-sm-3 col-md-1 col-lg-1 d-flex gap-2">
+          <button (click)="onSearchChange()" class="btn btn-primary btn-search" type="button">
+            <i class="fas fa-search"></i>
+          </button>
+          <button *ngIf="searchTerm"
+                  (click)="clearSearch()"
+                  class="btn btn-danger btn-clear"
+                  type="button">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+    </div>
+    <div class="row mb-3">
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-2">
 
-          <!-- Controles: input + botones -->
-          <div class="d-flex align-items-end gap-2 flex-wrap">
-            <input class="form-control"
-                  style="width: 220px;"
-                  [(ngModel)]="searchTerm"
-                  [ngModelOptions]="{ standalone: true }"
-                  (keyup.enter)="onSearchChange()"
-                  type="text"
-                  placeholder="Search">
-
-            <button (click)="onSearchChange()" class="btn btn-primary btn-search" type="button">
-              <i class="fas fa-search me-1"></i>
-            </button>
-
-            <button *ngIf="searchTerm"
-                    (click)="clearSearch()"
-                    class="btn btn-danger btn-clear"
-                    type="button">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-
           <!-- Botón de ordenar -->
-          <div>
             <button class="btn btn-outline-secondary" (click)="toggleOrder()">
               <i [ngClass]="orderAsc ? 'fas fa-sort-amount-up' : 'fas fa-sort-amount-down'"></i>
               {{'ui_ordenar_por_fecha' | label}}
             </button>
-          </div>
 
         </div>
-      </div>
     </div>
 
     <div class="col-12 col-sm-6 col-lg-4 mb-4" *ngFor="let enquiry of pagedEnquiries">

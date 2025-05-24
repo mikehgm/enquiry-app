@@ -23,6 +23,48 @@
   top: 38px;
 }
 
+.form-floating input,
+.form-floating select,
+.form-floating textarea {
+  padding: 1rem 1rem 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.form-floating label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.highlight-input input {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 1rem;
+  border: 2px solid #007bff;
+  background-color: #f0f8ff;
+}
+
+.highlight-input label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.money-symbol {
+  font-size: 1.5rem;
+}
+
+.currency-input {
+  text-align: right;
+}
+
+.text-areas {
+  padding: 2rem 0.8rem 0.5rem 0.8rem!important;
+}
+
+.folio {
+  text-align: center;
+  font-size: 1.5rem!important;
+  font-weight: 700;
+}
 
 @media (max-width: 576px) {
   .btn-status {

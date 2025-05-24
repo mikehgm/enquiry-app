@@ -3,22 +3,38 @@
         <div class="col-lg-8 col-md-10">
           <app-back-button></app-back-button>
           <div class="card">
-            <div class="card-header text-white">
-              <h1 class="d-flex align-items-center mb-4">
-                <i [ngClass]="isEdit ? 'fas fa-edit' : 'fas fa-inbox'"
-                  class="me-2 fs-3">
-                </i>
+            <div class="card-header text-white bg-primary py-3">
+              <h2 class="d-flex align-items-center mb-0 fs-4">
+                <i [ngClass]="isEdit ? 'fas fa-edit' : 'fas fa-inbox'" class="me-2 fs-4"></i>
                 {{ isEdit ? ('ui_edit_enquiry' | label) : ('ui_new_enquiry' | label) }}
-              </h1>
+              </h2>
             </div>
             <div class="card-body p-4 p-lg-5">
-              <div class="d-flex flex-column align-items-end gap-2 mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
 
+                <!-- Botón a la izquierda -->
+                <div *ngIf="isEdit">
+                  <button class="btn btn-outline-primary btn-status" >
+                    <i class="fas fa-info-circle me-1"></i> Nueva acción
+                  </button>
+                </div>
+
+                <!-- Botón VER TICKET a la derecha -->
                 <div *ngIf="isEdit || newEnquiry.folio">
                   <button class="btn btn-secondary btn-status" [routerLink]="['/enquiry/ticket', newEnquiry.enquiryId]">
                     <i class="fas fa-receipt me-1"></i> {{'ui_ver_ticket' | label}}
                   </button>
                 </div>
+
+              </div>
+
+              <div class="d-flex flex-column align-items-end gap-2 mb-4">
+
+                <!-- <div *ngIf="isEdit || newEnquiry.folio">
+                  <button class="btn btn-secondary btn-status" [routerLink]="['/enquiry/ticket', newEnquiry.enquiryId]">
+                    <i class="fas fa-receipt me-1"></i> {{'ui_ver_ticket' | label}}
+                  </button>
+                </div> -->
 
                 <div class="d-flex gap-2" *ngIf="isEdit">
                   <button
@@ -54,7 +70,7 @@
                         type="text"
                         name="folio"
                         [(ngModel)]="newEnquiry.folio"
-                        class="form-control"
+                        class="form-control folio"
                         id="folio"
                         placeholder="Folio"
                         disabled="true"
@@ -65,7 +81,7 @@
                   <div class="col-md-6">
                     <div class="form-floating mb-3">
 
-                      <select class="form-select" name="enquiryTypeId" [(ngModel)]="newEnquiry.enquiryTypeId" id="enquiryTypeId" required>
+                      <select class="form-select" name="enquiryTypeId" [(ngModel)]="newEnquiry.enquiryTypeId" id="enquiryTypeId" required [disabled]="isResolved">
                         <option value="">{{'ui_select_enquiry_type' | label}}</option>
                         @for (type of typeList | async; track $index) {
                           <option [value]="type.typeId">{{ type.typeName }}</option>
@@ -88,53 +104,105 @@
                   </div>
                 </div>
 
+                <h5 class="mt-4 mb-3 text-primary fw-bold"><i class="fas fa-user me-1"></i> Información del Cliente</h5>
+
                 <div class="form-floating mb-3">
-                  <input type="text" name="customerName" [(ngModel)]="newEnquiry.customerName" class="form-control" id="customerName" placeholder=" " required>
+                  <input type="text" name="customerName"
+                    [(ngModel)]="newEnquiry.customerName" class="form-control"
+                    id="customerName" placeholder=" " required [readonly]="isResolved" [disabled]="isResolved">
                   <label for="customerName" class="required-field">{{'ui_full_name' | label}}</label>
                 </div>
 
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-floating mb-3">
-                      <input type="email" name="email" [(ngModel)]="newEnquiry.email" class="form-control" id="email" placeholder=" " required>
+                      <input type="email" name="email"
+                        [(ngModel)]="newEnquiry.email" class="form-control"
+                        id="email" placeholder=" " required [readonly]="isResolved" [disabled]="isResolved">
                       <label for="email" class="required-field">{{'ui_correo_electronico' | label}}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-floating mb-3">
-                      <input type="tel" name="phone" [(ngModel)]="newEnquiry.phone" class="form-control" id="phone" placeholder=" " required>
+                      <input type="tel" name="phone"
+                        [(ngModel)]="newEnquiry.phone" class="form-control"
+                        id="phone" placeholder=" " required [readonly]="isResolved" [disabled]="isResolved">
                       <label for="phone" class="required-field">{{'ui_phone_number' | label}}</label>
                     </div>
                   </div>
                 </div>
 
+                <h5 class="mt-4 mb-3 text-primary fw-bold"><i class="fas fa-clipboard me-1"></i> Detalles del Servicio</h5>
+
                 <div class="form-floating mb-4">
-                  <textarea class="form-control" name="message" [(ngModel)]="newEnquiry.message" id="message" style="height: 150px" placeholder=" " required></textarea>
+                  <textarea class="form-control text-areas" name="message"
+                    [(ngModel)]="newEnquiry.message" id="message" style="height: 150px"
+                    placeholder=" " required [readonly]="isResolved" [disabled]="isResolved"></textarea>
                   <label for="message" class="required-field">{{'ui_message' | label}}</label>
                 </div>
 
-                <div class="form-floating mb-4">
-                  <textarea class="form-control" name="resolution" [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px" placeholder=" " ></textarea>
-                  <label for="resolution">{{'ui_resolution' | label}}</label>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-floating mb-3 position-relative">
+                <!-- Bloque visual destacado: COSTO, ANTICIPO, SALDO -->
+                <div class="row highlight-input mb-4">
+                  <div class="col-md-4">
+                    <div class="form-floating position-relative mb-3">
                       <input
                         type="number"
                         name="costo"
                         step="0.01"
                         min="0"
                         [(ngModel)]="newEnquiry.costo"
-                        class="form-control ps-5"
+                        class="form-control ps-5 currency-input"
                         id="costo"
-                        placeholder="Costo" required>
+                        (keyup)="onAnticipoChange()"
+                        (focus)="clearZero('costo')"
+                        placeholder="0.00"
+                        required [readonly]="isResolved" [disabled]="isResolved">
                       <label for="costo" class="required-field">{{'ui_costo' | label}}</label>
                       <span class="position-absolute money-symbol translate-middle-y ms-3 text-muted">$</span>
                     </div>
                   </div>
-                  <div class="col-md-6">
+
+                  <div class="col-md-4">
+                    <div class="form-floating position-relative mb-3">
+                      <input
+                        type="number"
+                        name="anticipo"
+                        step="0.01"
+                        min="0"
+                        [(ngModel)]="newEnquiry.anticipo"
+                        class="form-control ps-5 currency-input"
+                        id="anticipo"
+                        (keyup)="onAnticipoChange()"
+                        (focus)="clearZero('anticipo')"
+                        placeholder="0.00"
+                        [readonly]="isResolved" [disabled]="isResolved">
+                      <label for="anticipo">{{'ui_anticipo' | label}}</label>
+                      <span class="position-absolute money-symbol translate-middle-y ms-3 text-muted">$</span>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-floating position-relative mb-3">
+                      <input
+                        type="number"
+                        name="saldoPago"
+                        step="0.01"
+                        min="0"
+                        [(ngModel)]="newEnquiry.saldoPago"
+                        class="form-control ps-5 currency-input"
+                        id="saldoPago"
+                        placeholder="Saldo a pagar"
+                        [readonly]="true" [disabled]="isResolved">
+                      <label for="saldoPago">{{'ui_saldo_pago' | label}}</label>
+                      <span class="position-absolute money-symbol translate-middle-y ms-3 text-muted">$</span>
+                    </div>
+                  </div>
+                </div>
+
+                <h5 class="mt-4 mb-3 text-primary fw-bold"><i class="fas fa-calendar-alt me-1"></i>Entrega Programada</h5>
+
+                <div class="row">
+                  <div class="col-md-4">
                     <div class="form-floating mb-3">
                       <input
                         type="date"
@@ -142,21 +210,79 @@
                         [(ngModel)]="newEnquiry.dueDate"
                         class="form-control"
                         id="fechaEntrega"
-                        placeholder="Fecha de entrega" required="">
+                        placeholder="Fecha de entrega" required="" [readonly]="isResolved" [disabled]="isResolved">
                       <label for="fechaEntrega" class="required-field">{{'ui_fecha_de_entrega' | label}}</label>
                     </div>
                   </div>
                 </div>
 
+                <div class="form-floating mb-4">
+                  <textarea class="form-control text-areas" name="resolution"
+                    [(ngModel)]="newEnquiry.resolution" id="resolution" style="height: 150px"
+                    placeholder=" " [readonly]="isResolved" [disabled]="isResolved"></textarea>
+                  <label for="resolution">{{'ui_resolution' | label}}</label>
+                </div>
+
+
+
                 <div class="d-grid">
-                  <button type="submit" class="btn btn-primary mt-3" [disabled]="loading || !formRef.valid">
-                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  <button
+                    type="submit"
+                    class="btn btn-lg btn-primary mt-3 shadow-sm"
+                    [disabled]="loading || !formRef.valid || isResolved">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                    <i class="fas fa-paper-plane me-1"></i>
                     {{ loading ? ('ui_saving' | label) : ('ui_enviar' | label) }}
                   </button>
+
                 </div>
               </form>
             </div>
           </div>
+
+          <!-- Carga de Imágenes -->
+           <div class="card shadow-sm mt-4">
+            <div class="card-body">
+              <label for="imageUpload" class="form-label">{{'ui_upload_images_title' | label}}</label>
+              <input type="file" id="imageUpload" (change)="onFileSelected($event)" multiple accept="image/*" class="form-control mb-2">
+              <button
+                class="btn btn-success"
+                (click)="uploadImages(newEnquiry.enquiryId!)"
+                [disabled]="newEnquiry.enquiryId === 0 || selectedFiles.length === 0 || isResolved">
+                <i class="fas fa-upload me-1"></i> {{'ui_upload_images_btn' | label}}
+              </button>
+            </div>
+          </div>
+
+          <!-- Thumbnails -->
+          <div class="card mt-4" *ngIf="imageGallery.length > 0">
+            <div class="card-header text-white">
+              <h5><i class="fas fa-paperclip me-2"></i> {{'ui_images_attachments' | label}}</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-3">
+
+                <div class="thumbnail text-center" *ngFor="let image of imageGallery; let i = index" style="position: relative;">
+                  <img
+                    [src]="image.thumb"
+                    alt="imagen"
+                    class="img-thumbnail"
+                    style="width: 120px; height: auto; cursor: pointer;"
+                    (click)="openLightbox(i)" />
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger mt-1"
+                    (click)="deleteImage(image.imageId!); $event.stopPropagation()"
+                    [disabled]="isResolved">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

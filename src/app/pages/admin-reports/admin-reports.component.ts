@@ -13,6 +13,7 @@ import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { BackButtonComponent } from "../../shared/back-button/back-button.component";
 import { LabelPipe } from '../../pipes/label.pipe';
+import { CatalogDataService } from '../../service/catalog-data.service';
 export type PeriodType = 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
 @Component({
@@ -51,9 +52,13 @@ export class AdminReportsComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
 
-  constructor(private enquiryService: EnquiryDataService) {}
+  constructor(
+    private enquiryService: EnquiryDataService,
+    private catalogService: CatalogDataService) {}
 
   ngOnInit(): void {
+    this.catalogService.getStatuses().subscribe();
+    this.catalogService.getTypes().subscribe();
     this.enquiryService.getAllEnquiries().subscribe({
       next: (list) => {
         this.enquiryList = list;
@@ -112,18 +117,19 @@ export class AdminReportsComponent implements OnInit {
   }
 
   generateSummary(): void {
-    const statusMap = new Map<number, { label: string; class: string }>([
-      [1, { label: 'New', class: 'bg-primary' }],
-      [2, { label: 'In Progress', class: 'bg-warning text-dark' }],
-      [3, { label: 'On Hold', class: 'bg-secondary' }],
-      [4, { label: 'Resolved', class: 'bg-success' }]
+    const classMap = new Map<number, string>([
+      [1, 'bg-primary'],
+      [2, 'bg-warning text-dark'],
+      [3, 'bg-secondary'],
+      [4, 'bg-success']
     ]);
 
     const baseList = this.filteredList.length > 0 ? this.filteredList : this.enquiryList;
 
-    this.summaryByStatus = Array.from(statusMap.entries()).map(([statusId, meta]) => {
+    this.summaryByStatus = Array.from(classMap.entries()).map(([statusId, className]) => {
       const count = baseList.filter(e => e.enquiryStatusId === statusId).length;
-      return { ...meta, count, statusId };
+      const label = this.getStatusLabel(statusId);
+      return { label, class: className, count, statusId };
     });
   }
 
@@ -156,16 +162,6 @@ export class AdminReportsComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  public getStatusLabel(statusId: number): string {
-    switch (statusId) {
-      case 1: return 'New';
-      case 2: return 'In Progress';
-      case 3: return 'On Hold';
-      case 4: return 'Resolved';
-      default: return 'Unknown';
-    }
-  }
-
   public getStatusClass(statusId: number): string {
     switch (statusId) {
       case 1: return 'bg-primary';
@@ -177,13 +173,11 @@ export class AdminReportsComponent implements OnInit {
   }
 
   public getTypeLabel(typeId: number): string {
-    switch (typeId) {
-      case 1: return 'Wedding';
-      case 2: return 'Birthday';
-      case 3: return 'Party';
-      case 4: return 'Meeting';
-      default: return 'Unknown';
-    }
+    return this.catalogService.getTypeNameById(typeId)
+  }
+
+  getStatusLabel(id: number): string {
+    return this.catalogService.getStatusNameById(id);
   }
 
   getStatusIcon(status: number): string {
@@ -195,6 +189,8 @@ export class AdminReportsComponent implements OnInit {
       default: return '';
     }
   }
+
+
 
   showFullTable(): boolean {
     return this.filteredList.length > 0 || (!this.filter.from && !this.filter.to);
@@ -277,25 +273,8 @@ export class AdminReportsComponent implements OnInit {
   }
 
   pagedList(): Enquiry[] {
-    const list = this.filteredList.length > 0 ? this.filteredList : this.enquiryList;
-
-    let sortedList = [...list];
-    if (this.sortColumn) {
-      sortedList.sort((a, b) => {
-        const valA = (a as any)[this.sortColumn];
-        const valB = (b as any)[this.sortColumn];
-
-        const aVal = typeof valA === 'string' ? valA.toLowerCase() : valA;
-        const bVal = typeof valB === 'string' ? valB.toLowerCase() : valB;
-
-        return this.sortDirection === 'asc'
-          ? aVal > bVal ? 1 : aVal < bVal ? -1 : 0
-          : aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
-      });
-    }
-
     const start = (this.currentPage - 1) * this.itemsPerPage;
-    return sortedList.slice(start, start + this.itemsPerPage);
+    return this.displayedList().slice(start, start + this.itemsPerPage);
   }
 
   totalPages(): number {

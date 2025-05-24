@@ -1,6 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LightboxModule } from 'ngx-lightbox';
+import { Lightbox } from 'ngx-lightbox';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EnquiryDataService } from '../../service/enquiry-data.service';
 import { Observable } from 'rxjs';
@@ -12,10 +15,13 @@ import { BackButtonComponent } from '../../shared/back-button/back-button.compon
 import { CatalogDataService } from '../../service/catalog-data.service';
 import { EnquiryStatusEnum } from '../../models/enquiry-status.enum';
 import { LabelPipe } from '../../pipes/label.pipe';
+import { EnquiryImagen } from '../../models/enquiryImagen.model';
+import { environment } from '../../../environment/environment';
 
 @Component({
+  standalone: true,
   selector: 'app-new-enquiry',
-  imports: [FormsModule, CommonModule, AsyncPipe, RouterLink, BackButtonComponent, LabelPipe],
+  imports: [FormsModule, CommonModule, AsyncPipe, RouterLink, BackButtonComponent, LabelPipe, LightboxModule ],
   templateUrl: './new-enquiry.component.html',
   styleUrl: './new-enquiry.component.css'
 })
@@ -40,15 +46,26 @@ export class NewEnquiryComponent implements OnInit {
     updatedBy: '',
     updatedAt: '',
     folio: '',
-    costo: 0,
+    costo: null,
+    anticipo: null,
+    saldoPago: 0,
     dueDate: ''
   }
   public loading = false;
   public isEdit = false;
   public enquiryIdToEdit: number | null = null;
   public enquiryStatus =  EnquiryStatusEnum;
+  public imageGallery: {
+    src: string;
+    thumb: string;
+    caption?: string;
+    imageId?: number }[] = [];
+  selectedFiles: File[] = [];
 
-  constructor(private alert: AlertService) { }
+  constructor(
+    private alert: AlertService,
+    private lightbox: Lightbox,
+    private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     this.loadCatalogs();
@@ -64,6 +81,17 @@ export class NewEnquiryComponent implements OnInit {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (!idParam) {
       this.newEnquiry.enquiryStatusId = 1;
+      this.newEnquiry.costo = 0;
+      this.newEnquiry.anticipo = 0;
+      this.newEnquiry.saldoPago = 0;
+
+      const today = new Date();
+      const twoDaysLater = new Date(today);
+      twoDaysLater.setDate(today.getDate() + 2);
+
+      const formattedDate = twoDaysLater.toISOString().split('T')[0];
+
+      this.newEnquiry.dueDate = formattedDate;
       return;
     }
 
@@ -77,13 +105,35 @@ export class NewEnquiryComponent implements OnInit {
       next: (data: Enquiry) => {
         if (data.dueDate) {
           const fecha = parseLocalDate(data.dueDate);
+          data.anticipo = data.anticipo || 0;
+          data.saldoPago = data.saldoPago || 0;
           data.dueDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
         }
         this.newEnquiry = data;
+
+        this.loadEnquiryImages(id);
       },
       error: (err) => {
         console.error(err);
         this.showGenericError();
+      }
+    });
+  }
+
+  private loadEnquiryImages(id: number): void {
+    this.enquiryDataService.getEnquiryImages(id).subscribe({
+      next: (images: EnquiryImagen[]) => {
+
+        this.imageGallery = images.map(img => ({
+          imageId: img.enquiryImageId,
+          src: (environment.apiUrl + (img.filePath ?? '')),
+          thumb: (environment.apiUrl + (img.thumbnailPath ?? img.filePath ?? '')),
+          caption: img.fileName
+        }));
+
+      },
+      error: (err) => {
+        console.error('Error al cargar imágenes', err);
       }
     });
   }
@@ -159,13 +209,79 @@ export class NewEnquiryComponent implements OnInit {
   toDto(enquiry: Enquiry): Partial<Enquiry> {
     const {
       enquiryId, enquiryTypeId, enquiryStatusId, customerName,
-      phone, email, message, resolution, costo, dueDate
+      phone, email, message, resolution, costo, dueDate, anticipo, saldoPago
     } = enquiry;
-    return { enquiryId, enquiryTypeId, enquiryStatusId, customerName, phone, email, message, resolution, costo, dueDate };
+    return { enquiryId, enquiryTypeId, enquiryStatusId, customerName, phone, email, message, resolution, costo, dueDate, anticipo, saldoPago };
   }
 
   getStatusLabel(id: number): string {
     return this.catalogDataService.getStatusNameById(id);
+  }
+
+  onAnticipoChange(): void {
+    const costo = this.newEnquiry.costo ?? 0;
+    const anticipo = this.newEnquiry.anticipo ?? 0;
+    this.newEnquiry.saldoPago = Math.max(0, costo - anticipo);
+  }
+
+  openLightbox(index: number): void {
+    this.lightbox.open(this.imageGallery, index);
+  }
+
+  closeLightbox(): void {
+    this.lightbox.close();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+
+    this.selectedFiles = Array.from(input.files);
+  }
+
+  public uploadImages(enquiryId: number): void {
+    this.enquiryDataService.uploadEnquiryImages(enquiryId, this.selectedFiles).subscribe({
+      next: () => {
+        this.alert.success('Imágenes cargadas correctamente');
+        this.selectedFiles = [];
+        this.loadEnquiryImages(enquiryId);
+      },
+      error: (err) => {
+        console.error(err);
+        this.alert.error('Error', 'No se pudieron subir las imágenes.');
+      }
+    });
+  }
+
+  deleteImage(imageId: number): void {
+    this.alert.confirm({
+      title: '¿Eliminar imagen?',
+      text: 'Esta acción no se puede deshacer. ¿Deseas continuar?',
+      confirmColor: '#dc3545'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.enquiryDataService.deleteEnquiryImage(imageId).subscribe({
+          next: () => {
+            this.alert.success('Imagen eliminada correctamente');
+            this.loadEnquiryImages(this.newEnquiry.enquiryId!); // recargar lista
+          },
+          error: (err) => {
+            console.error(err);
+            this.alert.error('Error', 'No se pudo eliminar la imagen.');
+          }
+        });
+      }
+    });
+  }
+
+  clearZero(field: 'costo' | 'anticipo') {
+    if (this.newEnquiry[field] === 0) {
+      this.newEnquiry[field] = null;
+    }
+  }
+
+  get isResolved(): boolean {
+    return this.newEnquiry.enquiryStatusId === EnquiryStatusEnum.RESOLVED;
   }
 
   private showGenericError(message: string = 'Hubo un error inesperado, favor de intentar de nuevo.') {

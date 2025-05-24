@@ -12,7 +12,9 @@ export interface Enquiry {
   updatedBy?: string;
   updatedAt?: string;
   folio?: string;
-  costo?: number;
+  costo?: number | null;
+  anticipo?: number | null;
+  saldoPago?: number;
   dueDate?: string;
 }
 

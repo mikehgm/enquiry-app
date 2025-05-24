@@ -19,11 +19,7 @@ export class SendPromotionModalComponent {
   @Input() clientName: string = '';
   @Input() email: string = '';
   @Input() phone: string = '';
-  @Output() send = new EventEmitter<{
-    method: 'email' | 'whatsapp',
-    message: string,
-    imageFile?: File
-  }>();
+
 
   show = false;
   selectedMethod: 'email' | 'whatsapp' = 'email';
@@ -52,7 +48,6 @@ export class SendPromotionModalComponent {
     this.imagePreview = null;
     this.selectedMethod = 'email';
     this.show = false;
-    this.send.emit();
   }
 
   submit(): void {

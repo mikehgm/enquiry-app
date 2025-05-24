@@ -1,9 +1,10 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Enquiry } from '../../../models/enquiry.model';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { parseLocalDate } from '../../../utils/date-utils';
+import { AppConfigService } from '../../../service/app-config.service';
 
 @Component({
   selector: 'app-trend-chart',
@@ -11,17 +12,17 @@ import { parseLocalDate } from '../../../utils/date-utils';
   imports: [CommonModule, NgChartsModule],
   templateUrl: './trend-chart.component.html'
 })
-
 export class TrendChartComponent implements OnChanges {
   @Input() enquiries: Enquiry[] = [];
   @Input() dateRange!: { from: string; to: string };
   @Input() selectedPeriod!: 'day' | 'week' | 'month' | 'bimester' | 'quarter' | 'semester' | 'year' | 'range';
 
+  private config = inject(AppConfigService);
 
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
-      title: { display: true, text: 'Enquiries Created per Month' },
+      title: { display: true, text: '' },
       legend: { display: false }
     },
     maintainAspectRatio: false
@@ -48,13 +49,14 @@ export class TrendChartComponent implements OnChanges {
     this.lineChartLabels = labels;
     this.lineChartData = [{
       data: counts,
-      label: 'Enquiries',
+      label: this.config.getLabel('ui_enquiries') || 'Enquiries',
       borderColor: '#0d6efd',
       fill: true,
       tension: 0.4
     }];
-  }
 
+    this.lineChartOptions.plugins!.title!.text = this.config.getLabel('ui_enquiries_trend_chart') || 'Enquiries Created per Period';
+  }
 
   private generateDateLabels(from: Date, to: Date): string[] {
     const labels: string[] = [];
@@ -66,7 +68,7 @@ export class TrendChartComponent implements OnChanges {
         case 'day':
         case 'week':
         case 'range':
-          label = current.toISOString().substring(0, 10); // yyyy-mm-dd
+          label = current.toISOString().substring(0, 10);
           current.setDate(current.getDate() + 1);
           break;
         case 'month':
@@ -101,8 +103,7 @@ export class TrendChartComponent implements OnChanges {
     for (const label of labels) counts.set(label, 0);
 
     data.forEach(enquiry => {
-
-      if (!enquiry.createdDate) return; // <- prevención de error
+      if (!enquiry.createdDate) return;
       const d = parseLocalDate(enquiry.createdDate);
 
       let label = '';
@@ -134,6 +135,4 @@ export class TrendChartComponent implements OnChanges {
 
     return labels.map(l => counts.get(l) ?? 0);
   }
-
-
 }
